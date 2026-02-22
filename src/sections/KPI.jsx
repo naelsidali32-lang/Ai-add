@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion'
 import { useState, useEffect } from 'react'
+import ParticleBackground from '../components/ParticleBackground'
 
 function AnimatedNumber({ target, suffix = '', prefix = '' }) {
   const [value, setValue] = useState(0)
@@ -140,6 +141,8 @@ export default function KPI() {
         backgroundSize: '60px 60px',
       }} />
 
+      <ParticleBackground color="#FF8C42" colorAlt="#E8497A" />
+
       {/* Dégradé coin droit */}
       <div style={{
         position: 'absolute', inset: 0, zIndex: 0,
@@ -174,7 +177,7 @@ export default function KPI() {
           fontFamily: "'League Spartan', sans-serif", fontSize: '1rem', fontWeight: 300,
           color: '#6B6B6B', maxWidth: 520, margin: '1.5rem auto 0', lineHeight: 1.7,
         }}>
-          Every metric that matters — centralized, automated and always live.
+          Every metric that matters: centralized, automated and always live.
         </p>
       </motion.div>
 

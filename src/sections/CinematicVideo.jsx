@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion'
+import ParticleBackground from '../components/ParticleBackground'
 
 const features = [
   {
@@ -46,6 +47,8 @@ export default function CinematicVideo() {
         overflow: 'hidden',
       }}
     >
+      <ParticleBackground color="#FF8C42" colorAlt="#E8497A" />
+
       {/* ── Bloc cinéma sombre ── */}
       <div
         style={{
@@ -112,7 +115,7 @@ export default function CinematicVideo() {
             color: 'rgba(255,255,255,0.5)', maxWidth: 520,
             margin: '1.5rem auto 0', lineHeight: 1.7,
           }}>
-            The only format that cannot be automated. Every frame is manually directed — a deliberate, time-intensive creative process.
+            The only format that cannot be automated. Every frame is manually directed: a deliberate, time-intensive creative process.
           </p>
         </motion.div>
 
@@ -175,7 +178,7 @@ export default function CinematicVideo() {
             marginTop: '1.5rem',
           }}
         >
-          ⏱ This process is long — it cannot be automated
+          ⏱ This process is long: it cannot be automated
         </motion.p>
       </div>
 

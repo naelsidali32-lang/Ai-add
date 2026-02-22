@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion'
 import { useState } from 'react'
+import ParticleBackground from '../components/ParticleBackground'
 
 const carousel1 = [
   '/photoA.jpg', '/photoB.jpg', '/photoC.jpg',
@@ -163,6 +164,8 @@ export default function Photo() {
         backgroundSize: '60px 60px',
       }} />
 
+      <ParticleBackground color="#FF8C42" colorAlt="#E8497A" />
+
       {/* Orbe */}
       <div style={{
         position: 'absolute', top: '10%', left: '-10%', zIndex: 0,
@@ -216,7 +219,7 @@ export default function Photo() {
           color: '#6B6B6B', maxWidth: 520,
           margin: '1.5rem auto 0', lineHeight: 1.7,
         }}>
-          Photorealistic visuals, persona creation and brand-ready assets — fully automated for your trading platform.
+          Photorealistic visuals, persona creation and brand-ready assets: fully automated for your trading platform.
         </p>
       </motion.div>
 

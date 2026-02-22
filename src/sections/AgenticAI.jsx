@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion'
+import ParticleBackground from '../components/ParticleBackground'
 
 const agentSteps = [
   { id: 1, label: 'Perceive',    desc: 'Reads data, context & environment',      icon: '👁️',  x: 50,  y: 8   },
@@ -73,6 +74,8 @@ export default function AgenticAI() {
         backgroundSize: '60px 60px',
       }} />
 
+      <ParticleBackground color="#E8497A" colorAlt="#9333EA" />
+
       {/* Orbes */}
       <div style={{
         position: 'absolute', top: '10%', right: '-5%', zIndex: 0,
@@ -120,7 +123,7 @@ export default function AgenticAI() {
           fontFamily: "'League Spartan', sans-serif", fontSize: '1rem', fontWeight: 300,
           color: 'rgba(255,255,255,0.5)', maxWidth: 520, margin: '1.5rem auto 0', lineHeight: 1.7,
         }}>
-          AI agents that perceive, decide and act — running your entire creative and acquisition pipeline without human intervention.
+          AI agents that perceive, decide and act: running your entire creative and acquisition pipeline without human intervention.
         </p>
       </motion.div>
 

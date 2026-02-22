@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion'
+import ParticleBackground from '../components/ParticleBackground'
 
 const nodes = [
   {
@@ -233,6 +234,8 @@ export default function Process() {
         backgroundSize: '60px 60px',
       }} />
 
+      <ParticleBackground color="#FF8C42" colorAlt="#E8497A" />
+
       {/* Dégradé coucher de soleil coin droit */}
       <div style={{
         position: 'absolute', inset: 0, zIndex: 0,
@@ -329,7 +332,6 @@ export default function Process() {
           { label: 'Video Static',    href: '#video-static'   },
           { label: 'Animated Video',  href: '#animated-video' },
           { label: 'Cinematic Video', href: '#cinematic'      },
-          { label: 'IRL',             href: '#irl'            },
           { label: 'KPI',             href: '#kpi'            },
           { label: 'Agentic AI',      href: '#agentic'        },
         ].map((btn, i) => (

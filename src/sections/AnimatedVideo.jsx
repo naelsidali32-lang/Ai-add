@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion'
+import ParticleBackground from '../components/ParticleBackground'
 
 const videos = ['/video4.mp4', '/video5.mp4', '/video6.mp4']
 
@@ -67,6 +68,8 @@ export default function AnimatedVideo() {
         backgroundSize: '60px 60px',
       }} />
 
+      <ParticleBackground color="#FF8C42" colorAlt="#E8497A" />
+
       {/* Dégradé coin droit */}
       <div style={{
         position: 'absolute', inset: 0, zIndex: 0,
@@ -112,7 +115,7 @@ export default function AnimatedVideo() {
           color: '#6B6B6B', maxWidth: 520,
           margin: '1.5rem auto 0', lineHeight: 1.7,
         }}>
-          Beyond simple clips — multi-scene storytelling, cinematic camera movements and fully automated workflows.
+          Beyond simple clips: multi-scene storytelling, cinematic camera movements and fully automated workflows.
         </p>
       </motion.div>
 

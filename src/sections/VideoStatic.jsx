@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion'
+import ParticleBackground from '../components/ParticleBackground'
 
 const videos = ['/video1.mp4', '/video2.mp4', '/video3.mp4']
 
@@ -67,6 +68,8 @@ export default function VideoStatic() {
         backgroundSize: '60px 60px',
       }} />
 
+      <ParticleBackground color="#FF8C42" colorAlt="#E8497A" />
+
       {/* Dégradé coin gauche */}
       <div style={{
         position: 'absolute', inset: 0, zIndex: 0,
@@ -112,7 +115,7 @@ export default function VideoStatic() {
           color: '#6B6B6B', maxWidth: 520,
           margin: '1.5rem auto 0', lineHeight: 1.7,
         }}>
-          AI-generated short clips optimized for paid ads — consistent avatars, automated pipelines, zero manual effort.
+          AI-generated short clips optimized for paid ads: consistent avatars, automated pipelines, zero manual effort.
         </p>
       </motion.div>
 

@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion'
+import ParticleBackground from '../components/ParticleBackground'
 
 const photos = [
   '/photo1.png',
@@ -44,6 +45,8 @@ export default function Hero() {
           />
         ))}
       </div>
+
+      <ParticleBackground color="#FF8C42" colorAlt="#E8497A" />
 
       {/* Layout : texte | bouton | photos */}
       <div
@@ -92,7 +95,7 @@ export default function Hero() {
               lineHeight: 1.7,
             }}
           >
-            End-to-end AI creative systems — from hyper-realistic visuals to intelligent acquisition pipelines.
+            End-to-end AI creative systems: from hyper-realistic visuals to intelligent acquisition pipelines.
           </motion.p>
 
           <motion.p
