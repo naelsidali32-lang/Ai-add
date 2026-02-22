@@ -1,12 +1,13 @@
 import { motion } from 'framer-motion'
 import ParticleBackground from '../components/ParticleBackground'
 
+// On utilise directement les chemins du dossier public en .jpg
 const photos = [
-  '/photo1.png',
-  '/photo2.png',
-  '/photo3.png',
-  '/photo4.png',
-  '/photo5.png',
+  '/Ai-add/photo1.jpg',
+  '/Ai-add/photo2.jpg',
+  '/Ai-add/photo3.jpg',
+  '/Ai-add/photo4.jpg',
+  '/Ai-add/photo5.jpg',
 ]
 
 export default function Hero() {

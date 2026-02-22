@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion'
 import ParticleBackground from '../components/ParticleBackground'
 
-const videos = ['/video4.mp4', '/video5.mp4', '/video6.mp4']
+const videos = ['/Ai-add/video4.mp4', '/Ai-add/video5.mp4', '/Ai-add/video6.mp4']
 
 const features = [
   {

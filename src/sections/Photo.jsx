@@ -3,16 +3,16 @@ import { useState } from 'react'
 import ParticleBackground from '../components/ParticleBackground'
 
 const carousel1 = [
-  '/photoA.jpg', '/photoB.jpg', '/photoC.jpg',
-  '/photoD.jpg', '/photoE.jpg', '/photoF.jpg',
+  '/Ai-add/photoA.jpg', '/Ai-add/photoB.jpg', '/Ai-add/photoC.jpg',
+  '/Ai-add/photoD.jpg', '/Ai-add/photoE.jpg', '/Ai-add/photoF.jpg',
 ]
 
 const carousel2 = [
-  '/photoG.jpg', '/photoH.jpg', '/photoI.jpg',
-  '/photoJ.jpg', '/photoK.jpg', '/photoL.jpg',
+  '/Ai-add/photoG.jpg', '/Ai-add/photoH.jpg', '/Ai-add/photoI.jpg',
+  '/Ai-add/photoJ.jpg', '/Ai-add/photoK.jpg', '/Ai-add/photoL.jpg',
 ]
 
-const heroPhotos = ['/photoM.jpg', '/photoN.jpg']
+const heroPhotos = ['/Ai-add/photoM.jpg', '/Ai-add/photoN.jpg']
 
 const features = [
   {

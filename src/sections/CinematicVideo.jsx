@@ -140,7 +140,7 @@ export default function CinematicVideo() {
           {/* Vidéo */}
           <div style={{ width: '100%', aspectRatio: '16/9', overflow: 'hidden', position: 'relative' }}>
             <video
-              src="/video7.mp4"
+              src="/Ai-add/video7.mp4"
               autoPlay
               loop
               muted
