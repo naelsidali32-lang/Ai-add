@@ -7,23 +7,20 @@ export default {
   theme: {
     extend: {
       colors: {
-        sunset: {
-          orange: '#FF8C42',
-          amber:  '#FFB347',
-          rose:   '#E8497A',
-          gold:   '#F5A623',
-        },
-        ink: {
-          DEFAULT: '#0A0A0A',
-          muted:   '#6B6B6B',
-          light:   '#9A9A9A',
-          faint:   '#C8C8C8',
-        },
+        sunflower:      '#F5C518',
+        'electric-blue':'#2D5BFF',
+        'rose-fluo':    '#FF00BB',
+        'coral-hot':    '#FF4D4D',
+        night:          '#0A0A0A',
+        cream:          '#FFF8E7',
+        accent:         '#FF00BB',
       },
       fontFamily: {
-        display: ['"Playfair Display"', 'serif'],
-        body:    ['"DM Sans"', 'sans-serif'],
-        mono:    ['"DM Mono"', 'monospace'],
+        league: ['"League Spartan"', '"Helvetica Neue"', 'Arial Black', 'sans-serif'],
+        body:   ['"Helvetica Neue"', 'Helvetica', 'Arial', 'sans-serif'],
+      },
+      borderRadius: {
+        pill: '9999px',
       },
     },
   },

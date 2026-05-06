@@ -1,131 +1,61 @@
 import { motion } from 'framer-motion'
-import ParticleBackground from '../components/ParticleBackground'
+import { useIsMobile, useIsTablet } from '../hooks/useMedia'
 
 const nodes = [
-  {
-    id: 'query',
-    label: 'Query',
-    icon: '👤',
-    x: 60, y: 240,
-    small: true,
-  },
-  {
-    id: 'automated',
-    label: 'Automated',
-    sub: ['Photo', 'Video Static', 'Animated Video'],
-    x: 180, y: 80,
-    w: 175, h: 120,
-  },
-  {
-    id: 'hands',
-    label: 'Hands Build',
-    sub: ['Cinematic Video', 'URL Strategy'],
-    x: 180, y: 340,
-    w: 175, h: 105,
-  },
-  {
-    id: 'montage',
-    label: 'Montage',
-    sub: [],
-    x: 440, y: 345,
-    w: 130, h: 60,
-  },
-  {
-    id: 'add',
-    label: 'ADD',
-    sub: ['Meta', 'TikTok', 'X'],
-    x: 440, y: 120,
-    w: 130, h: 110,
-  },
-  {
-    id: 'platform',
-    label: 'Platform',
-    sub: ['Discord', 'Telegram', 'Signal'],
-    x: 660, y: 120,
-    w: 145, h: 110,
-  },
-  {
-    id: 'dashboard',
-    label: 'Dashboard KPI',
-    sub: ['Clicks', 'Likes', 'CTR', 'Video Views', 'Shares'],
-    x: 880, y: 100,
-    w: 160, h: 130,
-  },
+  { id: 'query',     label: 'Query',         icon: '👤', x: 60,  y: 240, small: true },
+  { id: 'automated', label: 'Automated',     sub: ['Photo', 'Video Static', 'Animated Video'], x: 180, y: 80,  w: 175, h: 120 },
+  { id: 'hands',     label: 'Hands Build',   sub: ['Cinematic Video', 'URL Strategy'],         x: 180, y: 340, w: 175, h: 105 },
+  { id: 'montage',   label: 'Montage',       sub: [], x: 440, y: 345, w: 130, h: 60 },
+  { id: 'add',       label: 'ADD',           sub: ['Meta', 'TikTok', 'X'],          x: 440, y: 120, w: 130, h: 110 },
+  { id: 'platform',  label: 'Platform',      sub: ['Discord', 'Telegram', 'Signal'],x: 660, y: 120, w: 145, h: 110 },
+  { id: 'dashboard', label: 'Dashboard KPI', sub: ['Clicks', 'Likes', 'CTR', 'Video Views', 'Shares'], x: 880, y: 100, w: 160, h: 130 },
 ]
 
 const paths = [
-  { points: [{x:92,y:255}, {x:180,y:255}, {x:180,y:135}],                                      delay: 0.2  },
-  { points: [{x:92,y:270}, {x:140,y:270}, {x:140,y:375}, {x:180,y:375}],                       delay: 0.4  },
-  { points: [{x:355,y:135}, {x:395,y:135}, {x:395,y:175}, {x:440,y:175}],                      delay: 0.6  },
-  { points: [{x:355,y:385}, {x:440,y:385}, {x:440,y:370}],                                     delay: 0.7  },
-  { points: [{x:505,y:345}, {x:505,y:230}],                                                    delay: 0.85 },
-  { points: [{x:570,y:175}, {x:660,y:175}],                                                    delay: 1.0  },
-  { points: [{x:805,y:175}, {x:880,y:175}, {x:880,y:165}],                                    delay: 1.15 },
-  { points: [{x:1040,y:120}, {x:1060,y:120}, {x:1060,y:50}, {x:270,y:50}, {x:270,y:80}],     delay: 1.3  },
+  { points: [{x:92,y:255}, {x:180,y:255}, {x:180,y:135}],                                  delay: 0.2  },
+  { points: [{x:92,y:270}, {x:140,y:270}, {x:140,y:375}, {x:180,y:375}],                   delay: 0.4  },
+  { points: [{x:355,y:135}, {x:395,y:135}, {x:395,y:175}, {x:440,y:175}],                  delay: 0.6  },
+  { points: [{x:355,y:385}, {x:440,y:385}, {x:440,y:370}],                                 delay: 0.7  },
+  { points: [{x:505,y:345}, {x:505,y:230}],                                                delay: 0.85 },
+  { points: [{x:570,y:175}, {x:660,y:175}],                                                delay: 1.0  },
+  { points: [{x:805,y:175}, {x:880,y:175}, {x:880,y:165}],                                 delay: 1.15 },
+  { points: [{x:1040,y:120}, {x:1060,y:120}, {x:1060,y:50}, {x:270,y:50}, {x:270,y:80}],   delay: 1.3  },
 ]
 
 function pointsToD(points) {
   return points.map((p, i) => `${i === 0 ? 'M' : 'L'} ${p.x} ${p.y}`).join(' ')
 }
 
-function FluxPath({ points, delay, index }) {
+function FluxPath({ points, delay }) {
   const pathD = pointsToD(points)
   const lastP = points[points.length - 1]
   const prevP = points[points.length - 2]
-  const dx = lastP.x - prevP.x
-  const dy = lastP.y - prevP.y
-  const len = Math.sqrt(dx * dx + dy * dy)
-  const nx = dx / len
-  const ny = dy / len
+  const dx = lastP.x - prevP.x, dy = lastP.y - prevP.y
+  const len = Math.sqrt(dx*dx + dy*dy)
+  const nx = dx / len, ny = dy / len
   const a = 8
 
   return (
     <g>
-      <defs>
-        <linearGradient id={`g${index}`} x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%" stopColor="#FF8C42" stopOpacity="1" />
-          <stop offset="100%" stopColor="#E8497A" stopOpacity="1" />
-        </linearGradient>
-      </defs>
-
-      {/* Halo */}
       <motion.path
         d={pathD}
         fill="none"
-        stroke="#FF8C42"
-        strokeWidth="6"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeOpacity="0.12"
-        initial={{ pathLength: 0 }}
-        whileInView={{ pathLength: 1 }}
-        viewport={{ once: true }}
-        transition={{ duration: 1, delay }}
-      />
-
-      {/* Ligne principale */}
-      <motion.path
-        d={pathD}
-        fill="none"
-        stroke="#FF8C42"
+        stroke="#F5C518"
         strokeWidth="2"
         strokeLinecap="round"
         strokeLinejoin="round"
-        strokeOpacity="1"
         initial={{ pathLength: 0, opacity: 0 }}
         whileInView={{ pathLength: 1, opacity: 1 }}
         viewport={{ once: true }}
         transition={{ duration: 1, delay }}
       />
-
-      {/* Flèche */}
       <motion.polygon
         points={`
           ${lastP.x},${lastP.y}
           ${lastP.x - nx*a - ny*a*0.5},${lastP.y - ny*a + nx*a*0.5}
           ${lastP.x - nx*a + ny*a*0.5},${lastP.y - ny*a - nx*a*0.5}
         `}
-        fill="#E8497A"
+        fill="#FF00BB"
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
         viewport={{ once: true }}
@@ -148,10 +78,9 @@ function GlowNode({ node, delay }) {
           left: node.x, top: node.y,
           width: 64, height: 64,
           borderRadius: '50%',
-          background: 'linear-gradient(135deg, #FF8C42, #E8497A)',
+          background: '#F5C518',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
           fontSize: '1.6rem',
-          boxShadow: '0 0 30px rgba(255,140,66,0.7), 0 0 60px rgba(255,140,66,0.3)',
           zIndex: 10,
         }}
       >
@@ -172,37 +101,28 @@ function GlowNode({ node, delay }) {
         left: node.x, top: node.y,
         width: node.w,
         zIndex: 10,
-        background: 'linear-gradient(135deg, rgba(255,140,66,0.18), rgba(255,180,80,0.28))',
-        border: '1px solid rgba(255,140,66,0.5)',
+        background: 'rgba(255,255,255,0.06)',
+        border: '1px solid rgba(255,255,255,0.18)',
         borderRadius: 16,
         padding: '14px 18px',
-        backdropFilter: 'blur(16px)',
-        boxShadow: '0 8px 32px rgba(0,0,0,0.07), 0 0 18px rgba(255,140,66,0.2), inset 0 1px 0 rgba(255,255,255,0.4)',
-        overflow: 'hidden',
+        backdropFilter: 'blur(12px)',
       }}
     >
-      <motion.div
-        animate={{ x: ['-100%', '200%'] }}
-        transition={{ duration: 3.5, repeat: Infinity, ease: 'linear', delay }}
-        style={{
-          position: 'absolute', inset: 0,
-          background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.18), transparent)',
-          pointerEvents: 'none',
-        }}
-      />
       <p style={{
         fontFamily: "'League Spartan', sans-serif",
         fontWeight: 800, fontSize: '0.95rem',
-        color: '#FF6B1A',
+        color: '#F5C518',
         marginBottom: node.sub.length ? 7 : 0,
+        textTransform: 'uppercase',
+        letterSpacing: '0.04em',
       }}>
         {node.label}
       </p>
       {node.sub.map((s, i) => (
         <p key={i} style={{
-          fontFamily: "'League Spartan', sans-serif",
+          fontFamily: "'Helvetica Neue', sans-serif",
           fontSize: '0.78rem', fontWeight: 700,
-          color: '#3A3A3A', lineHeight: 1.7,
+          color: 'rgba(255,255,255,0.85)', lineHeight: 1.7,
         }}>
           {s}
         </p>
@@ -211,120 +131,202 @@ function GlowNode({ node, delay }) {
   )
 }
 
+function MobileFlow() {
+  const steps = [
+    { label: 'Query',         sub: ['User input'] },
+    { label: 'Automated',     sub: ['Photo', 'Video Static', 'Animated Video'] },
+    { label: 'Hands Build',   sub: ['Cinematic Video', 'URL Strategy'] },
+    { label: 'Montage',       sub: ['Edit & assemble'] },
+    { label: 'ADD',           sub: ['Meta', 'TikTok', 'X'] },
+    { label: 'Platform',      sub: ['Discord', 'Telegram', 'Signal'] },
+    { label: 'Dashboard KPI', sub: ['Clicks', 'Likes', 'CTR', 'Video Views', 'Shares'] },
+  ]
+  return (
+    <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
+      {steps.map((s, i) => (
+        <motion.div
+          key={s.label}
+          initial={{ opacity: 0, y: 10 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.4, delay: i * 0.06 }}
+          style={{
+            position: 'relative',
+            background: 'rgba(255,255,255,0.06)',
+            border: '1px solid rgba(255,255,255,0.18)',
+            borderRadius: 14,
+            padding: '14px 16px',
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: s.sub.length ? 6 : 0 }}>
+            <span style={{
+              fontFamily: "'League Spartan', sans-serif",
+              fontSize: '0.65rem', fontWeight: 800, color: '#FF00BB',
+              background: '#F5C518', padding: '2px 8px', borderRadius: 9999,
+              letterSpacing: '0.1em',
+            }}>
+              0{i + 1}
+            </span>
+            <p style={{
+              fontFamily: "'League Spartan', sans-serif",
+              fontWeight: 800, fontSize: '0.95rem', color: '#F5C518',
+              textTransform: 'uppercase', letterSpacing: '0.04em',
+            }}>
+              {s.label}
+            </p>
+          </div>
+          {s.sub.map((sub, j) => (
+            <p key={j} style={{
+              fontFamily: "'Helvetica Neue', sans-serif",
+              fontSize: '0.78rem', fontWeight: 700,
+              color: 'rgba(255,255,255,0.85)', lineHeight: 1.6,
+              paddingLeft: 4,
+            }}>
+              · {sub}
+            </p>
+          ))}
+        </motion.div>
+      ))}
+      <p style={{
+        marginTop: '0.5rem',
+        fontFamily: "'League Spartan', sans-serif",
+        fontSize: '0.62rem', fontWeight: 600,
+        color: '#F5C518', textTransform: 'uppercase',
+        letterSpacing: '0.18em', textAlign: 'center',
+      }}>
+        ↻ continuous loop
+      </p>
+    </div>
+  )
+}
+
 export default function Process() {
+  const isMobile = useIsMobile()
+  const isTablet = useIsTablet()
+
   return (
     <section
       id="process"
       style={{
-        minHeight: '100vh',
+        minHeight: isMobile ? 'auto' : '100vh',
         position: 'relative',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
-        padding: '6rem 4vw',
+        padding: isMobile ? '4rem 5vw' : '6rem 4vw',
         overflow: 'hidden',
-        background: 'white',
+        background: '#FF00BB',
       }}
     >
-      {/* Quadrillage */}
-      <div style={{
-        position: 'absolute', inset: 0, zIndex: 0,
-        backgroundImage: `linear-gradient(rgba(180,180,180,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(180,180,180,0.1) 1px, transparent 1px)`,
-        backgroundSize: '60px 60px',
-      }} />
+      {/* Section label */}
+      <motion.p
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.6 }}
+        style={{
+          fontFamily: "'League Spartan', sans-serif",
+          fontSize: '0.7rem',
+          fontWeight: 600,
+          letterSpacing: '0.2em',
+          textTransform: 'uppercase',
+          color: 'rgba(255,255,255,0.5)',
+          marginBottom: '1.5rem',
+          alignSelf: 'flex-start',
+          paddingLeft: isMobile ? 0 : '2vw',
+        }}
+      >
+        01 / process
+      </motion.p>
 
-      <ParticleBackground color="#FF8C42" colorAlt="#E8497A" />
-
-      {/* Dégradé coucher de soleil coin droit */}
-      <div style={{
-        position: 'absolute', inset: 0, zIndex: 0,
-        background: 'radial-gradient(ellipse 70% 70% at 100% 100%, rgba(255,140,66,0.18) 0%, rgba(232,73,122,0.12) 40%, transparent 70%)',
-        pointerEvents: 'none',
-      }} />
-
-      {/* Titre */}
+      {/* Massive title */}
       <motion.h2
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.8 }}
         style={{
-          position: 'relative', zIndex: 2,
           fontFamily: "'League Spartan', sans-serif",
-          fontSize: 'clamp(2.5rem, 5vw, 4.5rem)',
-          fontWeight: 800,
-          letterSpacing: '-0.03em',
-          marginBottom: '3rem',
-          textAlign: 'center',
-          color: '#0A0A0A',
+          fontSize: 'clamp(3rem, 9vw, 8rem)',
+          fontWeight: 900,
+          lineHeight: 0.88,
+          letterSpacing: '-0.04em',
+          color: '#FFFFFF',
+          marginBottom: isMobile ? '2rem' : '3.5rem',
+          alignSelf: 'flex-start',
+          paddingLeft: isMobile ? 0 : '2vw',
+          maxWidth: '90%',
         }}
       >
-        Process for{' '}
-        <span style={{
-          background: 'linear-gradient(135deg, #FF8C42, #E8497A)',
-          WebkitBackgroundClip: 'text',
-          WebkitTextFillColor: 'transparent',
-          backgroundClip: 'text',
-        }}>
-          AI Media
-        </span>
+        A loop that<br />
+        never sleeps.
       </motion.h2>
 
       {/* Infographie */}
-      <div style={{ position: 'relative', zIndex: 2, width: '100%', maxWidth: 1150, height: 540 }}>
-
-        <svg
-          style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', overflow: 'visible', zIndex: 1 }}
-          viewBox="0 0 1150 540"
-          preserveAspectRatio="xMidYMid meet"
-        >
-          {paths.map((p, i) => (
-            <FluxPath key={i} index={i} points={p.points} delay={p.delay} />
-          ))}
-        </svg>
-
-        {nodes.map((node, i) => (
-          <GlowNode key={node.id} node={node} delay={0.1 + i * 0.1} />
-        ))}
-
-        {/* Label loop */}
-        {/* Label loop */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ delay: 1.8 }}
+      {isMobile ? (
+        <MobileFlow />
+      ) : (
+        <div
           style={{
-            position: 'absolute', top: 8, left: '50%',
-            transform: 'translateX(-50%)',
-            fontFamily: "'League Spartan', sans-serif",
-            fontSize: '0.65rem', fontWeight: 600,
-            letterSpacing: '0.12em', textTransform: 'uppercase',
-            background: 'linear-gradient(135deg, #FF8C42, #E8497A)',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-            backgroundClip: 'text',
-            whiteSpace: 'nowrap',
+            position: 'relative',
+            zIndex: 2,
+            width: '100%',
+            maxWidth: 1150,
+            height: isTablet ? 'auto' : 540,
+            aspectRatio: isTablet ? '1150 / 540' : 'auto',
           }}
         >
-          Best performance ads are automatically rebuilt, forming a continuous loop.
-        </motion.div>
-      </div>
+          <svg
+            style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', overflow: 'visible', zIndex: 1 }}
+            viewBox="0 0 1150 540"
+            preserveAspectRatio="xMidYMid meet"
+          >
+            {paths.map((p, i) => (
+              <FluxPath key={i} points={p.points} delay={p.delay} />
+            ))}
+          </svg>
 
-      {/* 7 boutons services */}
+          <ScalingLayer>
+            {nodes.map((node, i) => (
+              <GlowNode key={node.id} node={node} delay={0.1 + i * 0.1} />
+            ))}
+          </ScalingLayer>
+
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ delay: 1.8 }}
+            style={{
+              position: 'absolute', top: 8, left: '50%',
+              transform: 'translateX(-50%)',
+              fontFamily: "'League Spartan', sans-serif",
+              fontSize: '0.65rem', fontWeight: 600,
+              letterSpacing: '0.18em', textTransform: 'uppercase',
+              color: '#F5C518',
+              whiteSpace: 'nowrap',
+              textAlign: 'center',
+              maxWidth: '95%',
+            }}
+          >
+            best performance ads are automatically rebuilt in a continuous loop
+          </motion.div>
+        </div>
+      )}
+
+      {/* Pill nav */}
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.7, delay: 0.3 }}
         style={{
-          position: 'relative', zIndex: 2,
           display: 'flex',
           flexWrap: 'wrap',
           justifyContent: 'center',
-          gap: '0.75rem',
-          marginTop: '3rem',
+          gap: '0.6rem',
+          marginTop: isMobile ? '2.5rem' : '3rem',
         }}
       >
         {[
@@ -341,37 +343,46 @@ export default function Process() {
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.4, delay: 0.4 + i * 0.08 }}
-            whileHover={{
-              scale: 1.05,
-              boxShadow: '0 0 30px rgba(255,140,66,0.5), 0 12px 40px rgba(255,140,66,0.3)',
-            }}
-            whileTap={{ scale: 0.97 }}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              paddingLeft: '1.75rem',
-              paddingRight: '1.75rem',
-              height: 48,
-              borderRadius: 9999,
-              background: 'linear-gradient(135deg, #FF8C42 0%, #FFB347 50%, #E8497A 100%)',
-              boxShadow: '0 4px 20px rgba(255,140,66,0.3), inset 0 1px 0 rgba(255,255,255,0.25)',
-              fontFamily: "'League Spartan', sans-serif",
-              fontSize: '0.82rem',
-              fontWeight: 700,
-              letterSpacing: '0.08em',
-              textTransform: 'uppercase',
-              color: 'white',
-              textDecoration: 'none',
-              whiteSpace: 'nowrap',
-              cursor: 'pointer',
-            }}
+            transition={{ duration: 0.4, delay: 0.4 + i * 0.06 }}
+            className="btn-pill btn-pill-light"
           >
             {btn.label}
           </motion.a>
         ))}
       </motion.div>
     </section>
+  )
+}
+
+// Wrapper that scales the absolute-positioned children to fit the parent width.
+// The original infographic is laid out for a 1150x540 box. On smaller laptops we
+// scale it uniformly so it never overflows.
+function ScalingLayer({ children }) {
+  return (
+    <div
+      ref={(el) => {
+        if (!el) return
+        const parent = el.parentElement
+        if (!parent) return
+        const fit = () => {
+          const w = parent.clientWidth
+          const scale = Math.min(1, w / 1150)
+          el.style.transform = `scale(${scale})`
+          el.style.width = '1150px'
+        }
+        fit()
+        const ro = new ResizeObserver(fit)
+        ro.observe(parent)
+      }}
+      style={{
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        height: 540,
+        transformOrigin: 'top left',
+      }}
+    >
+      {children}
+    </div>
   )
 }
