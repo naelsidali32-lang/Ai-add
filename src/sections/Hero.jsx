@@ -1,83 +1,81 @@
-import { motion } from 'framer-motion'
-import { lazy, Suspense } from 'react'
+import { motion, useScroll, useTransform } from 'framer-motion'
+import { lazy, Suspense, useRef } from 'react'
 import { useIsMobile, useIsTablet } from '../hooks/useMedia'
 
 const PufferFish = lazy(() => import('../components/PufferFish'))
 
-const timelinePhotos = [
-  '/Ai-add/photo1.jpg',
-  '/Ai-add/photo2.jpg',
-  '/Ai-add/photo3.jpg',
-  '/Ai-add/photo4.jpg',
-  '/Ai-add/photo5.jpg',
+const DESCRIPTION_PARAGRAPHS = [
+  'We bridge the gap between high-level creative direction and intelligent automation. Our studio specializes in building powerful brand identities through AI-driven visual content and strategic communication.',
+  'From media strategy to event coordination, we streamline the creative process to help ambitious brands move faster and stand out further. Design fueled by strategy, scaled by technology.',
 ]
 
-export default function Hero({ onDiscover }) {
+function ScrollWord({ word, progress, start, end }) {
+  const opacity = useTransform(progress, [start, end], [0.12, 1])
+  return (
+    <motion.span
+      style={{
+        opacity,
+        display: 'inline-block',
+        marginRight: '0.3em',
+        willChange: 'opacity',
+      }}
+    >
+      {word}
+    </motion.span>
+  )
+}
+
+function ScrollRevealText({ text, progress, rangeStart, rangeEnd }) {
+  const words = text.split(' ')
+  const span = rangeEnd - rangeStart
+  return (
+    <>
+      {words.map((word, i) => {
+        const t = (i + 0.5) / words.length
+        const center = rangeStart + t * span
+        const half = span / words.length / 1.2
+        return (
+          <ScrollWord
+            key={i}
+            word={word}
+            progress={progress}
+            start={center - half}
+            end={center + half}
+          />
+        )
+      })}
+    </>
+  )
+}
+
+export default function Hero() {
   const isMobile = useIsMobile()
   const isTablet = useIsTablet()
 
-  const handleDiscover = (e) => {
-    if (onDiscover) {
-      e.preventDefault()
-      onDiscover()
-    }
-  }
+  const fishPx = isMobile ? null : isTablet ? 520 : 720
 
   return (
     <section
       style={{
         position: 'relative',
-        minHeight: isMobile ? 'auto' : '100vh',
-        background: '#ffcf01',
-        overflow: 'hidden',
+        background: 'transparent',
         display: 'flex',
         flexDirection: 'column',
+        padding: isMobile ? '0 5vw 5rem' : '0 4vw 5vw',
       }}
     >
-      {/* Nav */}
+      {/* Title + fish — sits near the top of the first viewport */}
       <div
         style={{
           position: 'relative',
-          zIndex: 50,
+          minHeight: isMobile ? 'auto' : fishPx - 340,
+          paddingTop: isMobile ? '3rem' : '15vh',
+          paddingBottom: isMobile ? '2rem' : '0',
           display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          padding: isMobile ? '1.25rem 5vw' : '2rem 4vw',
+          alignItems: 'flex-start',
+          justifyContent: 'flex-start',
         }}
       >
-        <p
-          style={{
-            fontFamily: "'League Spartan', sans-serif",
-            fontWeight: 800,
-            fontSize: isMobile ? '0.85rem' : '1rem',
-            letterSpacing: '0.18em',
-            color: '#FFFFFF',
-          }}
-        >
-          ANNA KALEB
-        </p>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
-          {[0, 1, 2].map((i) => (
-            <span
-              key={i}
-              style={{ width: isMobile ? 22 : 28, height: 2, background: '#FFFFFF', borderRadius: 9999 }}
-            />
-          ))}
-        </div>
-      </div>
-
-      {/* Hero composition */}
-      <div
-        style={{
-          position: 'relative',
-          flex: 1,
-          padding: isMobile ? '1.5rem 5vw 0' : '2rem 4vw 0',
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'center',
-        }}
-      >
-        {/* 3D Star — puffer fish: floats absolute on desktop, inline below text on mobile */}
         <div
           style={
             isMobile
@@ -85,18 +83,16 @@ export default function Hero({ onDiscover }) {
                   position: 'relative',
                   width: '85vw',
                   height: '70vw',
-                  margin: '1.5rem auto 0',
+                  margin: '2rem auto 0',
                   order: 2,
-                  zIndex: 1,
                   pointerEvents: 'none',
                 }
               : {
                   position: 'absolute',
-                  right: isTablet ? '2vw' : '6vw',
-                  top: '50%',
-                  transform: 'translateY(-50%)',
-                  width: isTablet ? 'min(60vw, 600px)' : 'min(70vw, 880px)',
-                  height: isTablet ? 'min(60vw, 600px)' : 'min(70vw, 880px)',
+                  right: isTablet ? '-4vw' : '-2vw',
+                  top: 'calc(15vh - 13rem)',
+                  width: fishPx,
+                  height: fishPx,
                   zIndex: 1,
                   pointerEvents: 'none',
                 }
@@ -107,202 +103,112 @@ export default function Hero({ onDiscover }) {
           </Suspense>
         </div>
 
-        {/* Foreground text — sits above the puffer */}
-        <div
-          style={{
-            position: 'relative',
-            zIndex: 2,
-            maxWidth: isMobile ? '100%' : '70vw',
-            order: isMobile ? 1 : 'unset',
-          }}
-        >
-
-        {/* Overline */}
-        <motion.p
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          style={{
-            fontFamily: "'League Spartan', sans-serif",
-            fontSize: isMobile ? '0.65rem' : '0.75rem',
-            fontWeight: 600,
-            letterSpacing: '0.2em',
-            textTransform: 'uppercase',
-            color: 'rgba(255,255,255,0.5)',
-            marginBottom: isMobile ? '1rem' : '1.5rem',
-          }}
-        >
-          AI ADD · creative automation studio
-        </motion.p>
-
-        {/* Display title */}
         <motion.h1
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
           style={{
+            position: 'relative',
+            zIndex: 2,
             fontFamily: "'League Spartan', sans-serif",
-            fontSize: isMobile ? 'clamp(3.2rem, 17vw, 6rem)' : 'clamp(5rem, 14vw, 14rem)',
+            fontSize: isMobile ? 'clamp(3rem, 16vw, 5.5rem)' : 'clamp(4rem, 11vw, 11rem)',
             fontWeight: 900,
             lineHeight: 0.85,
             letterSpacing: '-0.04em',
             color: '#FFFFFF',
             margin: 0,
+            order: isMobile ? 1 : 'unset',
+            flex: isMobile ? 'unset' : '0 1 auto',
           }}
         >
-          The art<br />
-          of creating
+          Art beyond<br />
+          human touch
         </motion.h1>
-
-        {/* Body */}
-        <motion.p
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.25 }}
-          style={{
-            fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-            fontWeight: 700,
-            fontSize: isMobile ? '0.95rem' : '1.05rem',
-            lineHeight: 1.5,
-            color: 'rgba(255,255,255,0.85)',
-            maxWidth: isMobile ? '100%' : 460,
-            marginTop: isMobile ? '1.25rem' : '2rem',
-          }}
-        >
-          Complete AI creative systems, from hyper realistic visuals to intelligent acquisition pipelines for trading brands.
-        </motion.p>
-
-        {/* Pill buttons */}
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.45 }}
-          style={{
-            display: 'flex',
-            gap: '0.75rem',
-            marginTop: isMobile ? '1.5rem' : '2.25rem',
-            flexWrap: 'wrap',
-          }}
-        >
-          <a href="#discover" onClick={handleDiscover} className="btn-pill btn-pill-dark">Discover the work</a>
-          <a href="#discover" onClick={handleDiscover} className="btn-pill btn-pill-light">See agentic AI</a>
-        </motion.div>
-
-        {/* Maker tag */}
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.6, delay: 0.6 }}
-          style={{
-            fontFamily: "'League Spartan', sans-serif",
-            fontSize: '0.7rem',
-            fontWeight: 600,
-            letterSpacing: '0.18em',
-            textTransform: 'uppercase',
-            color: 'rgba(255,255,255,0.5)',
-            marginTop: isMobile ? '1.5rem' : '2rem',
-          }}
-        >
-          made by Nael Sidali
-        </motion.p>
-
-        </div>
-        {/* /foreground text */}
-
-        {/* Decorative side label — hidden on mobile/tablet */}
-        {!isTablet && (
-          <p
-            style={{
-              position: 'absolute',
-              right: '2vw',
-              top: '40%',
-              transform: 'rotate(90deg)',
-              transformOrigin: 'right top',
-              zIndex: 3,
-              fontFamily: "'League Spartan', sans-serif",
-              fontSize: '0.7rem',
-              fontWeight: 600,
-              letterSpacing: '0.4em',
-              color: 'rgba(255,255,255,0.6)',
-              textTransform: 'uppercase',
-              whiteSpace: 'nowrap',
-            }}
-          >
-            ↑ scroll · est. 2025
-          </p>
-        )}
       </div>
 
-      {/* Timeline of photos at the bottom */}
-      <motion.div
-        initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.9, delay: 0.5 }}
-        className={isMobile ? 'no-scrollbar' : ''}
-        style={{
-          position: 'relative',
-          padding: isMobile ? '2rem 5vw 2rem' : '3rem 4vw 2.5rem',
-          display: 'flex',
-          alignItems: 'flex-end',
-          gap: isMobile ? '0.85rem' : '1.25rem',
-          overflowX: isMobile ? 'auto' : 'hidden',
-          overflowY: 'hidden',
-          WebkitOverflowScrolling: 'touch',
-        }}
-      >
-        {timelinePhotos.map((src, i) => {
-          const sizes = isMobile ? [110, 90, 130, 100, 120] : [180, 140, 220, 160, 200]
-          const rotations = [-3, 2, -1.5, 3, -2]
-          const offsets = isMobile ? [0, 8, -4, 10, -2] : [0, 18, -10, 22, -6]
-          return (
-            <motion.div
-              key={src}
-              whileHover={{ rotate: 0, scale: 1.04 }}
-              transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-              style={{
-                flexShrink: 0,
-                width: sizes[i],
-                height: sizes[i] * 1.25,
-                borderRadius: 8,
-                overflow: 'hidden',
-                transform: `rotate(${rotations[i]}deg) translateY(${offsets[i]}px)`,
-                boxShadow: '0 20px 60px rgba(0,0,0,0.25)',
-              }}
-            >
-              <img
-                src={src}
-                alt=""
-                style={{
-                  width: '100%',
-                  height: '100%',
-                  objectFit: 'cover',
-                  display: 'block',
-                }}
-              />
-            </motion.div>
-          )
-        })}
-
-        {/* Caption — desktop only */}
-        {!isMobile && (
-          <p
-            style={{
-              marginLeft: 'auto',
-              fontFamily: "'League Spartan', sans-serif",
-              fontSize: '0.7rem',
-              fontWeight: 600,
-              letterSpacing: '0.18em',
-              textTransform: 'uppercase',
-              color: 'rgba(255,255,255,0.5)',
-              whiteSpace: 'nowrap',
-              alignSelf: 'flex-end',
-              paddingBottom: '0.5rem',
-            }}
-          >
-            a recent timeline ↗
-          </p>
-        )}
-      </motion.div>
+      <AboutStudioScroll isMobile={isMobile} />
     </section>
   )
 }
+
+function AboutStudioScroll({ isMobile }) {
+  const sectionRef = useRef(null)
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ['start end', 'end start'],
+  })
+
+  return (
+    <div
+      ref={sectionRef}
+      style={{
+        position: 'relative',
+        minHeight: '320vh',
+      }}
+    >
+      <div
+        style={{
+          position: 'sticky',
+          top: 0,
+          height: '100vh',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+          padding: isMobile ? '0 6vw' : '0 6vw',
+          gap: isMobile ? '1.5rem' : '2.5rem',
+        }}
+      >
+        <motion.span
+          initial={{ opacity: 0, y: 12 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.4 }}
+          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+          style={{
+            fontFamily: "'League Spartan', sans-serif",
+            fontWeight: 700,
+            fontSize: isMobile ? '0.7rem' : '0.85rem',
+            letterSpacing: '0.28em',
+            textTransform: 'uppercase',
+            color: 'rgba(255,255,255,0.8)',
+            display: 'inline-block',
+          }}
+        >
+          About the studio
+        </motion.span>
+
+        <h2
+          style={{
+            fontFamily: "'League Spartan', sans-serif",
+            fontWeight: 700,
+            fontSize: isMobile
+              ? 'clamp(1.6rem, 6vw, 2.6rem)'
+              : 'clamp(2rem, 3.4vw, 4rem)',
+            lineHeight: 1.15,
+            letterSpacing: '-0.015em',
+            color: '#FFFFFF',
+            margin: 0,
+            maxWidth: '90vw',
+          }}
+        >
+          <span style={{ display: 'block' }}>
+            <ScrollRevealText
+              text={DESCRIPTION_PARAGRAPHS[0]}
+              progress={scrollYProgress}
+              rangeStart={0.26}
+              rangeEnd={0.5}
+            />
+          </span>
+          <span style={{ display: 'block', marginTop: '0.6em' }}>
+            <ScrollRevealText
+              text={DESCRIPTION_PARAGRAPHS[1]}
+              progress={scrollYProgress}
+              rangeStart={0.5}
+              rangeEnd={0.74}
+            />
+          </span>
+        </h2>
+      </div>
+    </div>
+  )
+}
+

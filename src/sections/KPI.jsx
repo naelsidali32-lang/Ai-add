@@ -47,8 +47,8 @@ function DonutChart({ pct, color, label }) {
   const r = 28, circ = 2 * Math.PI * r
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
-      <svg width={80} height={80} viewBox="0 0 80 80">
-        <circle cx={40} cy={40} r={r} fill="none" stroke="rgba(255,255,255,0.1)" strokeWidth={8} />
+      <svg width={70} height={70} viewBox="0 0 80 80">
+        <circle cx={40} cy={40} r={r} fill="none" stroke="rgba(0,0,0,0.08)" strokeWidth={8} />
         <motion.circle cx={40} cy={40} r={r} fill="none" stroke={color} strokeWidth={8}
           strokeLinecap="round" strokeDasharray={circ}
           initial={{ strokeDashoffset: circ }}
@@ -57,12 +57,12 @@ function DonutChart({ pct, color, label }) {
           style={{ transformOrigin: '40px 40px', transform: 'rotate(-90deg)' }}
         />
         <text x={40} y={44} textAnchor="middle"
-          style={{ fontFamily: 'League Spartan', fontSize: 13, fontWeight: 800, fill: '#FFFFFF' }}>
+          style={{ fontFamily: 'League Spartan', fontSize: 13, fontWeight: 800, fill: '#1A1A1A' }}>
           {pct}%
         </text>
       </svg>
-      <p style={{ fontFamily: "'League Spartan', sans-serif", fontSize: '0.62rem', fontWeight: 600,
-        color: 'rgba(255,255,255,0.5)', textTransform: 'uppercase', letterSpacing: '0.12em' }}>
+      <p style={{ fontFamily: "'League Spartan', sans-serif", fontSize: '0.6rem', fontWeight: 600,
+        color: 'rgba(0,0,0,0.5)', textTransform: 'uppercase', letterSpacing: '0.12em' }}>
         {label}
       </p>
     </div>
@@ -89,7 +89,7 @@ function BarChart() {
             style={{ width: 14, background: b.c, borderRadius: 3 }}
           />
           <p style={{ fontFamily: "'League Spartan', sans-serif", fontSize: '0.55rem',
-            color: 'rgba(255,255,255,0.5)', fontWeight: 600 }}>{b.label}</p>
+            color: 'rgba(0,0,0,0.5)', fontWeight: 600 }}>{b.label}</p>
         </div>
       ))}
     </div>
@@ -105,8 +105,69 @@ const features = [
   { title: 'Weekly Automated Reports',    desc: 'Receive a structured performance report every week, with no manual pull required. Data driven decisions, always up to date.' },
 ]
 
-export default function KPI() {
-  const isMobile = useIsMobile()
+const kpiCards = [
+  { label: 'Total Views', value: 284750, suffix: '', prefix: '',  color: '#F5C518', trend: '+12.4%' },
+  { label: 'Click Rate',  value: 8,      suffix: '%', prefix: '', color: '#FF00BB', trend: '+2.1%'  },
+  { label: 'Revenue',     value: 42800,  suffix: '', prefix: '$', color: '#2D5BFF', trend: '+28.7%' },
+  { label: 'New Leads',   value: 1247,   suffix: '', prefix: '',  color: '#FF4D4D', trend: '+5.3%'  },
+]
+
+function MobileFeaturesCarousel({ items }) {
+  return (
+    <div
+      className="no-scrollbar"
+      style={{
+        display: 'flex',
+        overflowX: 'auto',
+        scrollSnapType: 'x mandatory',
+        gap: '0.7rem',
+        padding: '0.25rem 5vw 0.5rem',
+        WebkitOverflowScrolling: 'touch',
+      }}
+    >
+      {items.map((f, i) => (
+        <motion.div
+          key={f.title}
+          initial={{ opacity: 0, y: 12 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.4, delay: i * 0.05 }}
+          style={{
+            flex: '0 0 70vw',
+            scrollSnapAlign: 'center',
+            background: 'rgba(255,255,255,0.10)',
+            border: '1px solid rgba(255,255,255,0.18)',
+            borderRadius: 14,
+            padding: '0.95rem 1rem',
+            backdropFilter: 'blur(8px)',
+            WebkitBackdropFilter: 'blur(8px)',
+          }}
+        >
+          <p style={{
+            fontFamily: "'League Spartan', sans-serif",
+            fontWeight: 900, fontSize: '1.05rem',
+            color: '#FFFFFF',
+            marginBottom: '0.45rem',
+            letterSpacing: '-0.02em',
+            lineHeight: 1.1,
+          }}>
+            {f.title}
+          </p>
+          <p style={{
+            fontFamily: "'Helvetica Neue', sans-serif",
+            fontWeight: 700, fontSize: '0.78rem',
+            color: 'rgba(255,255,255,0.85)',
+            lineHeight: 1.5,
+          }}>
+            {f.desc}
+          </p>
+        </motion.div>
+      ))}
+    </div>
+  )
+}
+
+function MobileVersion() {
   return (
     <section
       id="kpi"
@@ -114,10 +175,171 @@ export default function KPI() {
         position: 'relative',
         background: '#2D5BFF',
         overflow: 'hidden',
-        padding: isMobile ? '4rem 0 5rem' : '7rem 0 8rem',
+        padding: '3.5rem 0 3rem',
       }}
     >
-      <div style={{ padding: '0 5vw', marginBottom: isMobile ? '2.5rem' : '4rem' }}>
+      <div style={{ padding: '0 5vw', marginBottom: '1.25rem' }}>
+        <motion.p
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          style={{
+            fontFamily: "'League Spartan', sans-serif",
+            fontSize: '0.62rem', fontWeight: 600,
+            letterSpacing: '0.2em', textTransform: 'uppercase',
+            color: 'rgba(255,255,255,0.55)',
+            marginBottom: '0.75rem',
+          }}
+        >
+          07 / dashboard kpi
+        </motion.p>
+        <motion.h2
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.7 }}
+          style={{
+            fontFamily: "'League Spartan', sans-serif",
+            fontSize: 'clamp(2.4rem, 11vw, 3.4rem)',
+            fontWeight: 900,
+            lineHeight: 0.88,
+            letterSpacing: '-0.04em',
+            color: '#FFFFFF',
+            margin: 0,
+          }}
+        >
+          Real time<br />data, live.
+        </motion.h2>
+        <motion.p
+          initial={{ opacity: 0, y: 12 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: 0.15 }}
+          style={{
+            fontFamily: "'Helvetica Neue', sans-serif",
+            fontWeight: 700, fontSize: '0.82rem',
+            color: 'rgba(255,255,255,0.85)',
+            lineHeight: 1.5,
+            marginTop: '0.85rem',
+            maxWidth: 420,
+          }}
+        >
+          Every metric that matters, centralized, automated and always live.
+        </motion.p>
+      </div>
+
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.7 }}
+        style={{
+          width: '90vw',
+          marginInline: 'auto',
+          background: '#EEF2F7',
+          border: '1px solid rgba(0,0,0,0.06)',
+          borderRadius: 14,
+          padding: '0.85rem',
+          boxShadow: '0 18px 40px rgba(0,0,0,0.22)',
+          marginBottom: '1.5rem',
+        }}
+      >
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.75rem', gap: 6 }}>
+          <div style={{ display: 'flex', gap: 4 }}>
+            {['#FF5F57','#FFBD2E','#28C840'].map(c => (
+              <div key={c} style={{ width: 7, height: 7, borderRadius: '50%', background: c }} />
+            ))}
+          </div>
+          <p style={{
+            fontFamily: "'League Spartan', sans-serif", fontSize: '0.55rem', fontWeight: 600,
+            color: 'rgba(0,0,0,0.5)', letterSpacing: '0.12em', textTransform: 'uppercase',
+          }}>AI ADD · Dashboard</p>
+          <div style={{
+            fontSize: '0.5rem', fontFamily: "'League Spartan', sans-serif", fontWeight: 700,
+            color: '#28C840', letterSpacing: '0.12em', textTransform: 'uppercase',
+          }}>● Live</div>
+        </div>
+
+        <div
+          className="no-scrollbar"
+          style={{
+            display: 'flex',
+            overflowX: 'auto',
+            scrollSnapType: 'x mandatory',
+            gap: '0.5rem',
+            marginBottom: '0.6rem',
+            WebkitOverflowScrolling: 'touch',
+          }}
+        >
+          {kpiCards.map((k, i) => (
+            <motion.div
+              key={k.label}
+              initial={{ opacity: 0, y: 8 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.2 + i * 0.06 }}
+              style={{
+                flex: '0 0 56%',
+                scrollSnapAlign: 'center',
+                background: '#FFFFFF',
+                border: `1px solid ${k.color}33`,
+                borderRadius: 12, padding: '0.7rem',
+              }}
+            >
+              <p style={{
+                fontFamily: "'League Spartan', sans-serif", fontSize: '0.55rem', fontWeight: 600,
+                color: 'rgba(0,0,0,0.5)', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 4,
+              }}>{k.label}</p>
+              <p style={{
+                fontFamily: "'League Spartan', sans-serif", fontSize: '1.05rem', fontWeight: 900, color: k.color,
+              }}>
+                <AnimatedNumber target={k.value} suffix={k.suffix} prefix={k.prefix} />
+              </p>
+              <p style={{
+                fontFamily: "'League Spartan', sans-serif", fontSize: '0.55rem', fontWeight: 700,
+                color: '#28C840', marginTop: 2,
+              }}>{k.trend}</p>
+              <div style={{ marginTop: 4, width: '100%', overflow: 'hidden' }}>
+                <MiniLineChart color={k.color} />
+              </div>
+            </motion.div>
+          ))}
+        </div>
+
+        <div style={{
+          background: '#FFFFFF', border: '1px solid rgba(0,0,0,0.06)',
+          borderRadius: 12, padding: '0.7rem',
+        }}>
+          <p style={{
+            fontFamily: "'League Spartan', sans-serif", fontSize: '0.55rem', fontWeight: 700,
+            color: 'rgba(0,0,0,0.5)', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 8,
+          }}>Traffic Sources</p>
+          <div style={{ display: 'flex', justifyContent: 'space-around', gap: '0.4rem' }}>
+            <DonutChart pct={68} color="#F5C518" label="Meta" />
+            <DonutChart pct={45} color="#FF00BB" label="TikTok" />
+            <DonutChart pct={32} color="#2D5BFF" label="X" />
+          </div>
+        </div>
+      </motion.div>
+
+      <MobileFeaturesCarousel items={features} />
+    </section>
+  )
+}
+
+function DesktopVersion() {
+  return (
+    <section
+      id="kpi"
+      style={{
+        position: 'relative',
+        background: '#2D5BFF',
+        overflow: 'hidden',
+        padding: '7rem 0 8rem',
+      }}
+    >
+      <div style={{ padding: '0 5vw', marginBottom: '4rem' }}>
         <motion.p
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -131,7 +353,7 @@ export default function KPI() {
             marginBottom: '1.5rem',
           }}
         >
-          06 / dashboard kpi
+          07 / dashboard kpi
         </motion.p>
         <motion.h2
           initial={{ opacity: 0, y: 30 }}
@@ -157,17 +379,16 @@ export default function KPI() {
           transition={{ duration: 0.7, delay: 0.15 }}
           style={{
             fontFamily: "'Helvetica Neue', sans-serif",
-            fontWeight: 700, fontSize: isMobile ? '0.95rem' : '1.1rem',
+            fontWeight: 700, fontSize: '1.1rem',
             color: 'rgba(255,255,255,0.85)',
             maxWidth: 540, lineHeight: 1.55,
-            marginTop: isMobile ? '1.25rem' : '2rem',
+            marginTop: '2rem',
           }}
         >
           Every metric that matters, centralized, automated and always live.
         </motion.p>
       </div>
 
-      {/* Dashboard UI */}
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -175,17 +396,16 @@ export default function KPI() {
         transition={{ duration: 0.9, delay: 0.2 }}
         style={{
           position: 'relative', zIndex: 2,
-          width: isMobile ? '92vw' : '92vw',
+          width: '92vw',
           marginInline: 'auto',
-          background: 'rgba(255,255,255,0.04)',
-          border: '1px solid rgba(255,255,255,0.1)',
-          borderRadius: isMobile ? 16 : 24,
-          padding: isMobile ? '1rem' : '2rem',
-          backdropFilter: 'blur(12px)',
-          marginBottom: isMobile ? '3rem' : '5rem',
+          background: '#EEF2F7',
+          border: '1px solid rgba(0,0,0,0.06)',
+          borderRadius: 24,
+          padding: '2rem',
+          boxShadow: '0 30px 80px rgba(0,0,0,0.22)',
+          marginBottom: '5rem',
         }}
       >
-        {/* Header */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.25rem', gap: 8, flexWrap: 'wrap' }}>
           <div style={{ display: 'flex', gap: 6 }}>
             {['#FF5F57','#FFBD2E','#28C840'].map(c => (
@@ -194,7 +414,7 @@ export default function KPI() {
           </div>
           <p style={{
             fontFamily: "'League Spartan', sans-serif", fontSize: '0.7rem', fontWeight: 600,
-            color: 'rgba(255,255,255,0.5)', letterSpacing: '0.12em', textTransform: 'uppercase',
+            color: 'rgba(0,0,0,0.5)', letterSpacing: '0.12em', textTransform: 'uppercase',
           }}>AI ADD · Performance Dashboard</p>
           <div style={{
             fontSize: '0.6rem', fontFamily: "'League Spartan', sans-serif", fontWeight: 700,
@@ -202,14 +422,8 @@ export default function KPI() {
           }}>● Live</div>
         </div>
 
-        {/* KPI cards */}
-        <div style={{ display: 'grid', gridTemplateColumns: isMobile ? 'repeat(2, 1fr)' : 'repeat(auto-fit, minmax(180px, 1fr))', gap: '0.6rem', marginBottom: '1.25rem' }}>
-          {[
-            { label: 'Total Views', value: 284750, suffix: '', prefix: '',  color: '#F5C518', trend: '+12.4%' },
-            { label: 'Click Rate',  value: 8,      suffix: '%', prefix: '', color: '#FF00BB', trend: '+2.1%'  },
-            { label: 'Revenue',     value: 42800,  suffix: '', prefix: '$', color: '#2D5BFF', trend: '+28.7%' },
-            { label: 'New Leads',   value: 1247,   suffix: '', prefix: '',  color: '#FF4D4D', trend: '+5.3%'  },
-          ].map((k, i) => (
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '0.6rem', marginBottom: '1.25rem' }}>
+          {kpiCards.map((k, i) => (
             <motion.div
               key={k.label}
               initial={{ opacity: 0, y: 10 }}
@@ -217,18 +431,18 @@ export default function KPI() {
               viewport={{ once: true }}
               transition={{ delay: 0.3 + i * 0.08 }}
               style={{
-                background: 'rgba(255,255,255,0.04)',
+                background: '#FFFFFF',
                 border: `1px solid ${k.color}33`,
-                borderRadius: 14, padding: isMobile ? '0.75rem' : '1rem',
+                borderRadius: 14, padding: '1rem',
                 minWidth: 0,
               }}
             >
               <p style={{
                 fontFamily: "'League Spartan', sans-serif", fontSize: '0.62rem', fontWeight: 600,
-                color: 'rgba(255,255,255,0.5)', textTransform: 'uppercase', letterSpacing: '0.12em', marginBottom: 6,
+                color: 'rgba(0,0,0,0.5)', textTransform: 'uppercase', letterSpacing: '0.12em', marginBottom: 6,
               }}>{k.label}</p>
               <p style={{
-                fontFamily: "'League Spartan', sans-serif", fontSize: isMobile ? '1.2rem' : '1.5rem', fontWeight: 900, color: k.color,
+                fontFamily: "'League Spartan', sans-serif", fontSize: '1.5rem', fontWeight: 900, color: k.color,
               }}>
                 <AnimatedNumber target={k.value} suffix={k.suffix} prefix={k.prefix} />
               </p>
@@ -243,26 +457,25 @@ export default function KPI() {
           ))}
         </div>
 
-        {/* Bottom row */}
-        <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(auto-fit, minmax(220px, 1fr))', gap: '0.6rem' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '0.6rem' }}>
           <div style={{
-            background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)',
-            borderRadius: 14, padding: isMobile ? '0.85rem' : '1rem',
+            background: '#FFFFFF', border: '1px solid rgba(0,0,0,0.06)',
+            borderRadius: 14, padding: '1rem',
           }}>
             <p style={{
               fontFamily: "'League Spartan', sans-serif", fontSize: '0.62rem', fontWeight: 700,
-              color: 'rgba(255,255,255,0.5)', textTransform: 'uppercase', letterSpacing: '0.12em', marginBottom: 12,
+              color: 'rgba(0,0,0,0.5)', textTransform: 'uppercase', letterSpacing: '0.12em', marginBottom: 12,
             }}>Daily Engagement</p>
             <BarChart />
           </div>
 
           <div style={{
-            background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)',
-            borderRadius: 14, padding: isMobile ? '0.85rem' : '1rem',
+            background: '#FFFFFF', border: '1px solid rgba(0,0,0,0.06)',
+            borderRadius: 14, padding: '1rem',
           }}>
             <p style={{
               fontFamily: "'League Spartan', sans-serif", fontSize: '0.62rem', fontWeight: 700,
-              color: 'rgba(255,255,255,0.5)', textTransform: 'uppercase', letterSpacing: '0.12em', marginBottom: 12,
+              color: 'rgba(0,0,0,0.5)', textTransform: 'uppercase', letterSpacing: '0.12em', marginBottom: 12,
             }}>Traffic Sources</p>
             <div style={{ display: 'flex', justifyContent: 'space-around', flexWrap: 'wrap', gap: '0.5rem' }}>
               <DonutChart pct={68} color="#F5C518" label="Meta" />
@@ -272,12 +485,12 @@ export default function KPI() {
           </div>
 
           <div style={{
-            background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)',
-            borderRadius: 14, padding: isMobile ? '0.85rem' : '1rem', overflow: 'hidden',
+            background: '#FFFFFF', border: '1px solid rgba(0,0,0,0.06)',
+            borderRadius: 14, padding: '1rem', overflow: 'hidden',
           }}>
             <p style={{
               fontFamily: "'League Spartan', sans-serif", fontSize: '0.62rem', fontWeight: 700,
-              color: 'rgba(255,255,255,0.5)', textTransform: 'uppercase', letterSpacing: '0.12em', marginBottom: 12,
+              color: 'rgba(0,0,0,0.5)', textTransform: 'uppercase', letterSpacing: '0.12em', marginBottom: 12,
             }}>Live Activity</p>
             {[
               { action: 'Joined Telegram', time: '2s ago',  color: '#F5C518' },
@@ -295,19 +508,19 @@ export default function KPI() {
                 style={{
                   display: 'flex', justifyContent: 'space-between', alignItems: 'center',
                   marginBottom: 8, paddingBottom: 8,
-                  borderBottom: '1px solid rgba(255,255,255,0.06)',
+                  borderBottom: '1px solid rgba(0,0,0,0.06)',
                 }}
               >
                 <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
                   <div style={{ width: 6, height: 6, borderRadius: '50%', background: e.color, flexShrink: 0 }} />
                   <p style={{
                     fontFamily: "'Helvetica Neue', sans-serif", fontSize: '0.7rem',
-                    fontWeight: 700, color: 'rgba(255,255,255,0.85)',
+                    fontWeight: 700, color: '#1A1A1A',
                   }}>{e.action}</p>
                 </div>
                 <p style={{
                   fontFamily: "'League Spartan', sans-serif", fontSize: '0.58rem',
-                  fontWeight: 600, color: 'rgba(255,255,255,0.4)',
+                  fontWeight: 600, color: 'rgba(0,0,0,0.4)',
                 }}>{e.time}</p>
               </motion.div>
             ))}
@@ -315,13 +528,12 @@ export default function KPI() {
         </div>
       </motion.div>
 
-      {/* Features */}
       <div
         style={{
           padding: '0 5vw',
           display: 'grid',
-          gridTemplateColumns: isMobile ? '1fr' : 'repeat(auto-fit, minmax(280px, 1fr))',
-          gap: isMobile ? '1.75rem' : '2.5rem 3rem',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+          gap: '2.5rem 3rem',
         }}
       >
         {features.map((f, i) => (
@@ -334,7 +546,7 @@ export default function KPI() {
           >
             <p style={{
               fontFamily: "'League Spartan', sans-serif",
-              fontWeight: 900, fontSize: isMobile ? '1.35rem' : '1.6rem',
+              fontWeight: 900, fontSize: '1.6rem',
               color: '#FFFFFF',
               marginBottom: '0.65rem',
               letterSpacing: '-0.02em',
@@ -344,7 +556,7 @@ export default function KPI() {
             </p>
             <p style={{
               fontFamily: "'Helvetica Neue', sans-serif",
-              fontWeight: 700, fontSize: isMobile ? '0.9rem' : '0.95rem',
+              fontWeight: 700, fontSize: '0.95rem',
               color: 'rgba(255,255,255,0.85)',
               lineHeight: 1.6,
             }}>
@@ -355,4 +567,9 @@ export default function KPI() {
       </div>
     </section>
   )
+}
+
+export default function KPI() {
+  const isMobile = useIsMobile()
+  return isMobile ? <MobileVersion /> : <DesktopVersion />
 }

@@ -12,17 +12,105 @@ const features = [
   { title: 'Auto Publish',         desc: 'The pipeline generates and posts daily content autonomously. Your team only handles the creative direction.' },
 ]
 
-const tools = ['Kling AI', 'Runway', 'Hailuo']
+function MobileVideoCarousel() {
+  return (
+    <div
+      className="no-scrollbar"
+      style={{
+        display: 'flex',
+        overflowX: 'auto',
+        scrollSnapType: 'x mandatory',
+        gap: '0.6rem',
+        padding: '0.5rem 5vw',
+        marginBottom: '1.5rem',
+        WebkitOverflowScrolling: 'touch',
+      }}
+    >
+      {videos.map((src, i) => (
+        <motion.div
+          key={src}
+          initial={{ opacity: 0, scale: 0.95 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, delay: i * 0.08 }}
+          style={{
+            flex: '0 0 60vw',
+            aspectRatio: '9/16',
+            scrollSnapAlign: 'center',
+            overflow: 'hidden',
+            boxShadow: '0 14px 32px rgba(0,0,0,0.28)',
+          }}
+        >
+          <video
+            src={src}
+            autoPlay
+            loop
+            muted
+            playsInline
+            style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+          />
+        </motion.div>
+      ))}
+    </div>
+  )
+}
 
-const pricing = [
-  { label: 'Per clip',     value: '$0.15 to $0.50' },
-  { label: 'Monthly plan', value: '$20 to $100'    },
-  { label: 'Resolution',   value: '720p to 1080p'  },
-  { label: 'Duration',     value: '5 to 15 sec'    },
-]
+function MobileFeaturesCarousel({ items }) {
+  return (
+    <div
+      className="no-scrollbar"
+      style={{
+        display: 'flex',
+        overflowX: 'auto',
+        scrollSnapType: 'x mandatory',
+        gap: '0.7rem',
+        padding: '0.25rem 5vw 0.5rem',
+        WebkitOverflowScrolling: 'touch',
+      }}
+    >
+      {items.map((f, i) => (
+        <motion.div
+          key={f.title}
+          initial={{ opacity: 0, y: 12 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.4, delay: i * 0.05 }}
+          style={{
+            flex: '0 0 70vw',
+            scrollSnapAlign: 'center',
+            background: 'rgba(255,255,255,0.10)',
+            border: '1px solid rgba(255,255,255,0.18)',
+            borderRadius: 14,
+            padding: '0.95rem 1rem',
+            backdropFilter: 'blur(8px)',
+            WebkitBackdropFilter: 'blur(8px)',
+          }}
+        >
+          <p style={{
+            fontFamily: "'League Spartan', sans-serif",
+            fontWeight: 900, fontSize: '1.05rem',
+            color: '#FFFFFF',
+            marginBottom: '0.45rem',
+            letterSpacing: '-0.02em',
+            lineHeight: 1.1,
+          }}>
+            {f.title}
+          </p>
+          <p style={{
+            fontFamily: "'Helvetica Neue', sans-serif",
+            fontWeight: 700, fontSize: '0.78rem',
+            color: 'rgba(255,255,255,0.85)',
+            lineHeight: 1.5,
+          }}>
+            {f.desc}
+          </p>
+        </motion.div>
+      ))}
+    </div>
+  )
+}
 
-export default function VideoStatic() {
-  const isMobile = useIsMobile()
+function MobileVersion() {
   return (
     <section
       id="video-static"
@@ -30,11 +118,78 @@ export default function VideoStatic() {
         position: 'relative',
         background: '#FF4D4D',
         overflow: 'hidden',
-        padding: isMobile ? '4rem 0 5rem' : '7rem 0 8rem',
+        padding: '3.5rem 0 3rem',
       }}
     >
-      {/* Section label + title */}
-      <div style={{ padding: '0 5vw', marginBottom: isMobile ? '2.5rem' : '4rem' }}>
+      <div style={{ padding: '0 5vw', marginBottom: '1.25rem' }}>
+        <motion.p
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          style={{
+            fontFamily: "'League Spartan', sans-serif",
+            fontSize: '0.62rem', fontWeight: 600,
+            letterSpacing: '0.2em', textTransform: 'uppercase',
+            color: 'rgba(255,255,255,0.55)',
+            marginBottom: '0.75rem',
+          }}
+        >
+          03 / video static
+        </motion.p>
+        <motion.h2
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.7 }}
+          style={{
+            fontFamily: "'League Spartan', sans-serif",
+            fontSize: 'clamp(2.4rem, 11vw, 3.4rem)',
+            fontWeight: 900,
+            lineHeight: 0.88,
+            letterSpacing: '-0.04em',
+            color: '#FFFFFF',
+            margin: 0,
+          }}
+        >
+          Scroll<br />stoppers.
+        </motion.h2>
+        <motion.p
+          initial={{ opacity: 0, y: 12 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: 0.15 }}
+          style={{
+            fontFamily: "'Helvetica Neue', sans-serif",
+            fontWeight: 700, fontSize: '0.82rem',
+            color: 'rgba(255,255,255,0.85)',
+            lineHeight: 1.5,
+            marginTop: '0.85rem',
+            maxWidth: 420,
+          }}
+        >
+          AI generated short clips for paid ads: consistent avatars, automated pipelines, zero manual effort.
+        </motion.p>
+      </div>
+
+      <MobileVideoCarousel />
+      <MobileFeaturesCarousel items={features} />
+    </section>
+  )
+}
+
+function DesktopVersion() {
+  return (
+    <section
+      id="video-static"
+      style={{
+        position: 'relative',
+        background: '#FF4D4D',
+        overflow: 'hidden',
+        padding: '7rem 0 8rem',
+      }}
+    >
+      <div style={{ padding: '0 5vw', marginBottom: '4rem' }}>
         <motion.p
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -73,34 +228,31 @@ export default function VideoStatic() {
           transition={{ duration: 0.7, delay: 0.15 }}
           style={{
             fontFamily: "'Helvetica Neue', sans-serif",
-            fontWeight: 700, fontSize: isMobile ? '0.95rem' : '1.1rem',
+            fontWeight: 700, fontSize: '1.1rem',
             color: 'rgba(255,255,255,0.85)',
             maxWidth: 520, lineHeight: 1.55,
-            marginTop: isMobile ? '1.25rem' : '2rem',
+            marginTop: '2rem',
           }}
         >
           AI generated short clips optimized for paid ads: consistent avatars, automated pipelines, zero manual effort.
         </motion.p>
       </div>
 
-      {/* 3 vertical videos — stacked grid on mobile, overlapping row on desktop */}
       <div
         style={{
           position: 'relative',
           width: '100%',
-          padding: isMobile ? '1rem 5vw' : '2rem 5vw',
-          display: isMobile ? 'grid' : 'flex',
-          gridTemplateColumns: isMobile ? '1fr 1fr' : undefined,
+          padding: '2rem 5vw',
+          display: 'flex',
           justifyContent: 'center',
           alignItems: 'flex-start',
-          gap: isMobile ? '0.75rem' : '1.5vw',
-          marginBottom: isMobile ? '3rem' : '5rem',
+          gap: '1.5vw',
+          marginBottom: '5rem',
         }}
       >
         {videos.map((src, i) => {
           const rotations = [-2, 1.5, -1]
           const offsets = [0, 60, 20]
-          const mobileSpan = isMobile && i === 2 ? '1 / span 2' : undefined
           return (
             <motion.div
               key={i}
@@ -110,14 +262,11 @@ export default function VideoStatic() {
               transition={{ duration: 0.7, delay: i * 0.12, ease: [0.16, 1, 0.3, 1] }}
               whileHover={{ rotate: 0, scale: 1.03, zIndex: 10 }}
               style={{
-                width: isMobile ? '100%' : '28vw',
-                gridColumn: mobileSpan,
-                maxWidth: isMobile && i === 2 ? '60%' : undefined,
-                marginInline: isMobile && i === 2 ? 'auto' : undefined,
+                width: '28vw',
                 aspectRatio: '9/16',
                 overflow: 'hidden',
-                borderRadius: 8,
-                transform: isMobile ? `rotate(${rotations[i] * 0.6}deg)` : `rotate(${rotations[i]}deg) translateY(${offsets[i]}px)`,
+                borderRadius: 0,
+                transform: `rotate(${rotations[i]}deg) translateY(${offsets[i]}px)`,
                 boxShadow: '0 30px 80px rgba(0,0,0,0.35)',
               }}
             >
@@ -134,36 +283,13 @@ export default function VideoStatic() {
         })}
       </div>
 
-      {/* Pricing */}
-      <div
-        style={{
-          padding: '0 5vw',
-          display: 'flex',
-          flexWrap: 'wrap',
-          gap: '0.6rem',
-          marginBottom: isMobile ? '2.5rem' : '5rem',
-        }}
-      >
-        {pricing.map((p) => (
-          <span
-            key={p.label}
-            className="btn-pill btn-pill-dark"
-            style={{ pointerEvents: 'none' }}
-          >
-            <strong style={{ marginRight: 8, fontWeight: 800 }}>{p.value}</strong>
-            <span style={{ opacity: 0.6, fontWeight: 600 }}>{p.label}</span>
-          </span>
-        ))}
-      </div>
-
-      {/* Features */}
       <div
         style={{
           padding: '0 5vw',
           display: 'grid',
-          gridTemplateColumns: isMobile ? '1fr' : 'repeat(auto-fit, minmax(280px, 1fr))',
-          gap: isMobile ? '1.75rem' : '2.5rem 3rem',
-          marginBottom: isMobile ? '2.5rem' : '4rem',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+          gap: '2.5rem 3rem',
+          marginBottom: '4rem',
         }}
       >
         {features.map((f, i) => (
@@ -176,7 +302,7 @@ export default function VideoStatic() {
           >
             <p style={{
               fontFamily: "'League Spartan', sans-serif",
-              fontWeight: 900, fontSize: isMobile ? '1.35rem' : '1.6rem',
+              fontWeight: 900, fontSize: '1.6rem',
               color: '#FFFFFF',
               marginBottom: '0.65rem',
               letterSpacing: '-0.02em',
@@ -186,7 +312,7 @@ export default function VideoStatic() {
             </p>
             <p style={{
               fontFamily: "'Helvetica Neue', sans-serif",
-              fontWeight: 700, fontSize: isMobile ? '0.9rem' : '0.95rem',
+              fontWeight: 700, fontSize: '0.95rem',
               color: 'rgba(255,255,255,0.85)',
               lineHeight: 1.6,
             }}>
@@ -196,22 +322,11 @@ export default function VideoStatic() {
         ))}
       </div>
 
-      <div style={{ padding: '0 5vw', display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '0.6rem' }}>
-        <p style={{
-          fontFamily: "'League Spartan', sans-serif",
-          fontSize: '0.7rem', fontWeight: 600,
-          letterSpacing: '0.18em', textTransform: 'uppercase',
-          color: 'rgba(255,255,255,0.5)',
-          marginRight: '0.5rem',
-        }}>
-          Powered by
-        </p>
-        {tools.map((tool) => (
-          <span key={tool} className="btn-pill btn-pill-dark" style={{ pointerEvents: 'none' }}>
-            {tool}
-          </span>
-        ))}
-      </div>
     </section>
   )
+}
+
+export default function VideoStatic() {
+  const isMobile = useIsMobile()
+  return isMobile ? <MobileVersion /> : <DesktopVersion />
 }

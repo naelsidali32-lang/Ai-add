@@ -1,21 +1,18 @@
 import { motion } from 'framer-motion'
+import { lazy, Suspense, useEffect, useRef } from 'react'
 import { useIsMobile } from '../hooks/useMedia'
 
+const PufferFish = lazy(() => import('../components/PufferFish'))
+
 const agentSteps = [
-  { id: 1, label: 'Perceive', desc: 'Reads data, context & environment', icon: '👁️', x: 50, y: 8  },
-  { id: 2, label: 'Reason',   desc: 'Analyzes and plans next action',     icon: '🧠', x: 82, y: 30 },
-  { id: 3, label: 'Act',      desc: 'Executes tasks autonomously',        icon: '⚡', x: 72, y: 68 },
-  { id: 4, label: 'Learn',    desc: 'Improves from results and feedback', icon: '📈', x: 28, y: 68 },
-  { id: 5, label: 'Memory',   desc: 'Stores context across sessions',     icon: '💾', x: 18, y: 30 },
+  { id: 1, label: 'Perceive', desc: 'Reads data, context & environment' },
+  { id: 2, label: 'Reason',   desc: 'Analyzes and plans next action' },
+  { id: 3, label: 'Act',      desc: 'Executes tasks autonomously' },
+  { id: 4, label: 'Learn',    desc: 'Improves from results and feedback' },
+  { id: 5, label: 'Memory',   desc: 'Stores context across sessions' },
 ]
 
-const connections = [
-  { x1: 50, y1: 18, x2: 78, y2: 32 },
-  { x1: 80, y1: 42, x2: 74, y2: 60 },
-  { x1: 62, y1: 72, x2: 38, y2: 72 },
-  { x1: 26, y1: 60, x2: 20, y2: 42 },
-  { x1: 22, y1: 30, x2: 44, y2: 12 },
-]
+const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v))
 
 const features = [
   { title: 'Autonomous Content Pipeline', desc: 'The agent monitors your best performing ads, generates new creatives, posts them and tracks results, without any human input.' },
@@ -26,10 +23,196 @@ const features = [
   { title: 'Zero Human Overhead',         desc: 'Once configured, the system runs indefinitely. You set the goals and the agent handles execution, optimization and reporting autonomously.' },
 ]
 
-const tools = ['n8n', 'LangChain', 'OpenAI API', 'Make.com', 'Zapier AI']
 
-export default function AgenticAI() {
-  const isMobile = useIsMobile()
+function AgentDiagram({ isMobile }) {
+  const containerRef = useRef(null)
+  const lookAtRef = useRef({ x: 0, y: 0 })
+
+  useEffect(() => {
+    if (isMobile) return
+    const handleMouseMove = (e) => {
+      if (!containerRef.current) return
+      const rect = containerRef.current.getBoundingClientRect()
+      const cx = rect.left + rect.width / 2
+      const cy = rect.top + rect.height / 2
+      const dx = clamp((e.clientX - cx) / (window.innerWidth / 2), -1.5, 1.5)
+      const dy = clamp((e.clientY - cy) / (window.innerHeight / 2), -1, 1)
+      lookAtRef.current.y = dx * (Math.PI / 4)
+      lookAtRef.current.x = -dy * (Math.PI / 8)
+    }
+    window.addEventListener('mousemove', handleMouseMove, { passive: true })
+    return () => window.removeEventListener('mousemove', handleMouseMove)
+  }, [isMobile])
+
+  const containerSize = isMobile ? 290 : 720
+  const centerSize = isMobile ? 120 : 280
+  const badgeSize = isMobile ? 64 : 130
+  const orbitRadius = (containerSize / 2) - (badgeSize / 2) - (isMobile ? 4 : 16)
+
+  return (
+    <motion.div
+      ref={containerRef}
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.9, delay: 0.2 }}
+      style={{
+        position: 'relative',
+        width: containerSize,
+        height: containerSize,
+        marginInline: 'auto',
+        marginBottom: isMobile ? '1.5rem' : '5rem',
+      }}
+    >
+      <motion.div
+        initial={{ scale: 0.8, opacity: 0 }}
+        whileInView={{ scale: 1, opacity: 1 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.7, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
+        style={{
+          position: 'absolute',
+          left: '50%', top: '50%',
+          width: centerSize, height: centerSize,
+          marginLeft: -centerSize / 2, marginTop: -centerSize / 2,
+          borderRadius: '50%',
+          border: `${isMobile ? 5 : 10}px solid #FFFFFF`,
+          boxShadow: '0 18px 50px rgba(0, 0, 0, 0.18)',
+          overflow: 'hidden',
+        }}
+      >
+        <Suspense fallback={<div style={{ width: '100%', height: '100%' }} />}>
+          <PufferFish lookAtRef={lookAtRef} />
+        </Suspense>
+      </motion.div>
+
+      {agentSteps.map((step, i) => {
+        const angle = -Math.PI / 2 + (i * 2 * Math.PI) / agentSteps.length
+        const bx = Math.cos(angle) * orbitRadius
+        const by = Math.sin(angle) * orbitRadius
+        const descWidth = isMobile ? 110 : 210
+        return (
+          <motion.div
+            key={step.id}
+            initial={{ opacity: 0, x: bx, y: by }}
+            whileInView={{ opacity: 1, x: bx, y: by }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.5 + i * 0.1, ease: [0.34, 1.2, 0.64, 1] }}
+            style={{
+              position: 'absolute',
+              left: '50%', top: '50%',
+              width: 0, height: 0,
+              zIndex: 5,
+            }}
+          >
+            <motion.div
+              initial={{ scale: 0.6 }}
+              whileInView={{ scale: 1 }}
+              viewport={{ once: true }}
+              whileHover={{ scale: 1.08 }}
+              transition={{ duration: 0.5, delay: 0.5 + i * 0.1, ease: [0.34, 1.2, 0.64, 1] }}
+              style={{
+                position: 'absolute',
+                width: badgeSize, height: badgeSize,
+                left: -badgeSize / 2, top: -badgeSize / 2,
+                borderRadius: '50%',
+                background: '#FFFFFF',
+                boxShadow: '0 14px 36px rgba(0, 0, 0, 0.18)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+              }}
+            >
+              <span style={{
+                fontFamily: "'League Spartan', sans-serif",
+                fontWeight: 800,
+                fontSize: isMobile ? '0.68rem' : '1.05rem',
+                color: '#0A0A0A',
+                letterSpacing: '-0.01em',
+                textAlign: 'center',
+                padding: '0 6px',
+              }}>
+                {step.label}
+              </span>
+            </motion.div>
+            {!isMobile && (
+              <p style={{
+                position: 'absolute',
+                left: -descWidth / 2,
+                top: badgeSize / 2 + 12,
+                width: descWidth,
+                margin: 0,
+                fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+                fontWeight: 700,
+                fontSize: '1rem',
+                lineHeight: 1.35,
+                color: '#FFFFFF',
+                textAlign: 'center',
+                pointerEvents: 'none',
+              }}>
+                {step.desc}
+              </p>
+            )}
+          </motion.div>
+        )
+      })}
+    </motion.div>
+  )
+}
+
+function MobileFeaturesCarousel({ items }) {
+  return (
+    <div
+      className="no-scrollbar"
+      style={{
+        display: 'flex',
+        overflowX: 'auto',
+        scrollSnapType: 'x mandatory',
+        gap: '0.7rem',
+        padding: '0.25rem 5vw 0.5rem',
+        WebkitOverflowScrolling: 'touch',
+      }}
+    >
+      {items.map((f, i) => (
+        <motion.div
+          key={f.title}
+          initial={{ opacity: 0, y: 12 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.4, delay: i * 0.05 }}
+          style={{
+            flex: '0 0 70vw',
+            scrollSnapAlign: 'center',
+            background: 'rgba(255,255,255,0.18)',
+            border: '1px solid rgba(255,255,255,0.28)',
+            borderRadius: 14,
+            padding: '0.95rem 1rem',
+            backdropFilter: 'blur(8px)',
+            WebkitBackdropFilter: 'blur(8px)',
+          }}
+        >
+          <p style={{
+            fontFamily: "'League Spartan', sans-serif",
+            fontWeight: 900, fontSize: '1.05rem',
+            color: '#FFFFFF',
+            marginBottom: '0.45rem',
+            letterSpacing: '-0.02em',
+            lineHeight: 1.1,
+          }}>
+            {f.title}
+          </p>
+          <p style={{
+            fontFamily: "'Helvetica Neue', sans-serif",
+            fontWeight: 700, fontSize: '0.78rem',
+            color: 'rgba(255,255,255,0.9)',
+            lineHeight: 1.5,
+          }}>
+            {f.desc}
+          </p>
+        </motion.div>
+      ))}
+    </div>
+  )
+}
+
+function MobileVersion() {
   return (
     <section
       id="agentic"
@@ -37,10 +220,110 @@ export default function AgenticAI() {
         position: 'relative',
         background: '#F5C518',
         overflow: 'hidden',
-        padding: isMobile ? '4rem 0 5rem' : '7rem 0 8rem',
+        padding: '3.5rem 0 3rem',
       }}
     >
-      <div style={{ padding: '0 5vw', marginBottom: isMobile ? '2.5rem' : '4rem' }}>
+      <div style={{ padding: '0 5vw', marginBottom: '1.25rem' }}>
+        <motion.p
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          style={{
+            fontFamily: "'League Spartan', sans-serif",
+            fontSize: '0.62rem', fontWeight: 600,
+            letterSpacing: '0.2em', textTransform: 'uppercase',
+            color: 'rgba(255,255,255,0.55)',
+            marginBottom: '0.75rem',
+          }}
+        >
+          08 / agentic ai
+        </motion.p>
+        <motion.h2
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.7 }}
+          style={{
+            fontFamily: "'League Spartan', sans-serif",
+            fontSize: 'clamp(2.4rem, 11vw, 3.4rem)',
+            fontWeight: 900,
+            lineHeight: 0.88,
+            letterSpacing: '-0.04em',
+            color: '#FFFFFF',
+            margin: 0,
+          }}
+        >
+          Full<br />autonomy.
+        </motion.h2>
+        <motion.p
+          initial={{ opacity: 0, y: 12 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: 0.15 }}
+          style={{
+            fontFamily: "'Helvetica Neue', sans-serif",
+            fontWeight: 700, fontSize: '0.82rem',
+            color: 'rgba(255,255,255,0.85)',
+            lineHeight: 1.5,
+            marginTop: '0.85rem',
+            maxWidth: 420,
+          }}
+        >
+          AI agents that perceive, decide and act, running your entire creative and acquisition pipeline.
+        </motion.p>
+      </div>
+
+      <AgentDiagram isMobile />
+
+      <MobileFeaturesCarousel items={features} />
+
+      <div style={{ padding: '2rem 5vw 0', textAlign: 'center' }}>
+        <motion.h3
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.7 }}
+          style={{
+            fontFamily: "'League Spartan', sans-serif",
+            fontSize: 'clamp(1.6rem, 7vw, 2.4rem)',
+            fontWeight: 900, lineHeight: 0.92,
+            letterSpacing: '-0.03em',
+            color: '#FFFFFF',
+            marginBottom: '1.25rem',
+          }}
+        >
+          Let's automate it.
+        </motion.h3>
+        <motion.a
+          href="#contact"
+          onClick={(e) => { e.preventDefault(); window.dispatchEvent(new CustomEvent('open-contact')) }}
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.7, delay: 0.15 }}
+          className="btn-pill btn-pill-dark"
+          style={{ display: 'inline-block' }}
+        >
+          CONTACT SALES
+        </motion.a>
+      </div>
+    </section>
+  )
+}
+
+function DesktopVersion() {
+  return (
+    <section
+      id="agentic"
+      style={{
+        position: 'relative',
+        background: '#F5C518',
+        overflow: 'hidden',
+        padding: '7rem 0 8rem',
+      }}
+    >
+      <div style={{ padding: '0 5vw', marginBottom: '4rem' }}>
         <motion.p
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -54,7 +337,7 @@ export default function AgenticAI() {
             marginBottom: '1.5rem',
           }}
         >
-          07 / agentic ai
+          08 / agentic ai
         </motion.p>
         <motion.h2
           initial={{ opacity: 0, y: 30 }}
@@ -80,129 +363,25 @@ export default function AgenticAI() {
           transition={{ duration: 0.7, delay: 0.15 }}
           style={{
             fontFamily: "'Helvetica Neue', sans-serif",
-            fontWeight: 700, fontSize: isMobile ? '0.95rem' : '1.1rem',
+            fontWeight: 700, fontSize: '1.1rem',
             color: 'rgba(255,255,255,0.85)',
             maxWidth: 540, lineHeight: 1.55,
-            marginTop: isMobile ? '1.25rem' : '2rem',
+            marginTop: '2rem',
           }}
         >
           AI agents that perceive, decide and act, running your entire creative and acquisition pipeline without human intervention.
         </motion.p>
       </div>
 
-      {/* Agent diagram */}
-      <motion.div
-        initial={{ opacity: 0, y: 30 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.9, delay: 0.2 }}
-        style={{
-          position: 'relative', zIndex: 2,
-          width: isMobile ? '92vw' : '100%',
-          maxWidth: 640,
-          height: isMobile ? 340 : 420,
-          marginInline: 'auto',
-          marginBottom: isMobile ? '3rem' : '5rem',
-        }}
-      >
-        <svg
-          style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', overflow: 'visible' }}
-          viewBox="0 0 100 100"
-          preserveAspectRatio="xMidYMid meet"
-        >
-          {connections.map((c, i) => (
-            <g key={i}>
-              <motion.line
-                x1={c.x1} y1={c.y1} x2={c.x2} y2={c.y2}
-                stroke="#FFFFFF" strokeWidth="0.8"
-                strokeLinecap="round"
-                initial={{ pathLength: 0, opacity: 0 }}
-                whileInView={{ pathLength: 1, opacity: 1 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.8, delay: i * 0.15 }}
-              />
-              <path id={`ap-${i}`} d={`M ${c.x1} ${c.y1} L ${c.x2} ${c.y2}`} fill="none" stroke="none" />
-              <motion.circle r="1.2" fill="#FF00BB"
-                initial={{ opacity: 0 }}
-                whileInView={{ opacity: 1 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.8 + i * 0.1 }}
-              >
-                <animateMotion dur={`${2 + i * 0.3}s`} repeatCount="indefinite" begin={`${i * 0.4}s`}>
-                  <mpath href={`#ap-${i}`} />
-                </animateMotion>
-              </motion.circle>
-            </g>
-          ))}
+      <AgentDiagram isMobile={false} />
 
-          <motion.circle cx={50} cy={50} r={8}
-            fill="none" stroke="#FFFFFF" strokeWidth="0.8"
-            strokeDasharray="4 2"
-            initial={{ opacity: 0, scale: 0 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.3 }}
-            style={{ transformOrigin: '50px 50px' }}
-          />
-          <motion.text x={50} y={52.5} textAnchor="middle"
-            style={{ fontFamily: 'League Spartan', fontSize: 4, fontWeight: 900, fill: '#FFFFFF' }}
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.8 }}
-          >
-            AGENT
-          </motion.text>
-        </svg>
-
-        {agentSteps.map((step, i) => (
-          <motion.div
-            key={step.id}
-            initial={{ opacity: 0, scale: 0.7 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.2 + i * 0.12, ease: [0.34, 1.2, 0.64, 1] }}
-            whileHover={{ scale: 1.1, zIndex: 20 }}
-            style={{
-              position: 'absolute',
-              left: `${step.x}%`, top: `${step.y}%`,
-              transform: 'translate(-50%, -50%)',
-              zIndex: 10,
-              display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6,
-            }}
-          >
-            <div style={{
-              width: isMobile ? 50 : 68, height: isMobile ? 50 : 68, borderRadius: 9999,
-              background: 'rgba(255,255,255,0.95)',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              fontSize: isMobile ? '1.2rem' : '1.7rem',
-              boxShadow: '0 12px 32px rgba(0,0,0,0.15)',
-            }}>
-              {step.icon}
-            </div>
-            <p style={{
-              fontFamily: "'League Spartan', sans-serif", fontSize: isMobile ? '0.65rem' : '0.78rem', fontWeight: 800,
-              color: '#FFFFFF', textAlign: 'center', whiteSpace: 'nowrap',
-              textTransform: 'uppercase', letterSpacing: '0.08em',
-            }}>{step.label}</p>
-            {!isMobile && (
-              <p style={{
-                fontFamily: "'Helvetica Neue', sans-serif", fontSize: '0.65rem', fontWeight: 700,
-                color: 'rgba(255,255,255,0.8)', textAlign: 'center', maxWidth: 100, lineHeight: 1.4,
-              }}>{step.desc}</p>
-            )}
-          </motion.div>
-        ))}
-      </motion.div>
-
-      {/* Features */}
       <div
         style={{
           padding: '0 5vw',
           display: 'grid',
-          gridTemplateColumns: isMobile ? '1fr' : 'repeat(auto-fit, minmax(280px, 1fr))',
-          gap: isMobile ? '1.75rem' : '2.5rem 3rem',
-          marginBottom: isMobile ? '2.5rem' : '4rem',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+          gap: '2.5rem 3rem',
+          marginBottom: '4rem',
         }}
       >
         {features.map((f, i) => (
@@ -215,7 +394,7 @@ export default function AgenticAI() {
           >
             <p style={{
               fontFamily: "'League Spartan', sans-serif",
-              fontWeight: 900, fontSize: isMobile ? '1.35rem' : '1.6rem',
+              fontWeight: 900, fontSize: '1.6rem',
               color: '#FFFFFF',
               marginBottom: '0.65rem',
               letterSpacing: '-0.02em',
@@ -225,7 +404,7 @@ export default function AgenticAI() {
             </p>
             <p style={{
               fontFamily: "'Helvetica Neue', sans-serif",
-              fontWeight: 700, fontSize: isMobile ? '0.9rem' : '0.95rem',
+              fontWeight: 700, fontSize: '0.95rem',
               color: 'rgba(255,255,255,0.85)',
               lineHeight: 1.6,
             }}>
@@ -235,25 +414,7 @@ export default function AgenticAI() {
         ))}
       </div>
 
-      <div style={{ padding: '0 5vw', display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '0.6rem', marginBottom: isMobile ? '3rem' : '5rem' }}>
-        <p style={{
-          fontFamily: "'League Spartan', sans-serif",
-          fontSize: '0.7rem', fontWeight: 600,
-          letterSpacing: '0.18em', textTransform: 'uppercase',
-          color: 'rgba(255,255,255,0.5)',
-          marginRight: '0.5rem',
-        }}>
-          Powered by
-        </p>
-        {tools.map((tool) => (
-          <span key={tool} className="btn-pill btn-pill-dark" style={{ pointerEvents: 'none' }}>
-            {tool}
-          </span>
-        ))}
-      </div>
-
-      {/* Footer CTA */}
-      <div style={{ padding: isMobile ? '3rem 5vw 0' : '5rem 5vw 0', textAlign: 'center' }}>
+      <div style={{ padding: '5rem 5vw 0', textAlign: 'center' }}>
         <motion.h3
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -265,15 +426,29 @@ export default function AgenticAI() {
             fontWeight: 900, lineHeight: 0.9,
             letterSpacing: '-0.03em',
             color: '#FFFFFF',
-            marginBottom: isMobile ? '1.5rem' : '2rem',
+            marginBottom: '2rem',
           }}
         >
           Let's automate it.
         </motion.h3>
-        <a href="mailto:naelsidali31@gmail.com" className="btn-pill btn-pill-dark">
-          Start a project
-        </a>
+        <motion.a
+          href="#contact"
+          onClick={(e) => { e.preventDefault(); window.dispatchEvent(new CustomEvent('open-contact')) }}
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.7, delay: 0.15 }}
+          className="btn-pill btn-pill-dark"
+          style={{ display: 'inline-block' }}
+        >
+          CONTACT SALES
+        </motion.a>
       </div>
     </section>
   )
+}
+
+export default function AgenticAI() {
+  const isMobile = useIsMobile()
+  return isMobile ? <MobileVersion /> : <DesktopVersion />
 }

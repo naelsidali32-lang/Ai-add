@@ -7,10 +7,15 @@ const MODEL_URL = `${import.meta.env.BASE_URL}toon_puffer_fish.glb`
 
 useGLTF.preload(MODEL_URL)
 
-function PufferModel({ rotationX }) {
+function PufferModel({ rotationX, rotationY, facing, lookAtRef }) {
   const ref = useRef()
   const { scene } = useGLTF(MODEL_URL)
   const currentRotationX = useRef(rotationX ?? 0)
+  const currentRotationY = useRef(
+    typeof rotationY === 'number' ? rotationY :
+    facing === 'left' ? -Math.PI / 2 :
+    facing === 'right' ? Math.PI / 2 : 0
+  )
 
   const prepared = useMemo(() => {
     const cloned = scene.clone(true)
@@ -63,13 +68,43 @@ function PufferModel({ rotationX }) {
     const t = state.clock.elapsedTime
     if (!ref.current) return
     ref.current.position.y = Math.sin(t * 0.9) * 0.15
-    if (typeof rotationX === 'number') {
-      // External X-axis rotation only.
-      const k = 0.12
-      currentRotationX.current += (rotationX - currentRotationX.current) * k
+
+    const target = lookAtRef && lookAtRef.current
+    if (target) {
+      currentRotationY.current += (target.y - currentRotationY.current) * 0.10
+      currentRotationX.current += (target.x - currentRotationX.current) * 0.12
+      ref.current.rotation.y = currentRotationY.current
       ref.current.rotation.x = currentRotationX.current
-      ref.current.rotation.y = 0
-      ref.current.rotation.z = 0
+      ref.current.rotation.z = Math.cos(t * 0.5) * 0.04
+      return
+    }
+
+    const hasX = typeof rotationX === 'number'
+    const hasY = typeof rotationY === 'number'
+
+    if (hasX || hasY) {
+      if (hasY) {
+        const k = 0.10
+        currentRotationY.current += (rotationY - currentRotationY.current) * k
+        ref.current.rotation.y = currentRotationY.current
+      } else {
+        ref.current.rotation.y = 0
+      }
+      if (hasX) {
+        const k = 0.12
+        currentRotationX.current += (rotationX - currentRotationX.current) * k
+        ref.current.rotation.x = currentRotationX.current
+      } else {
+        ref.current.rotation.x = Math.sin(t * 0.6) * 0.05
+      }
+      ref.current.rotation.z = Math.cos(t * 0.5) * 0.04
+    } else if (facing === 'left' || facing === 'right') {
+      const targetY = facing === 'right' ? Math.PI / 2 : -Math.PI / 2
+      const k = 0.10
+      currentRotationY.current += (targetY - currentRotationY.current) * k
+      ref.current.rotation.y = currentRotationY.current
+      ref.current.rotation.x = Math.sin(t * 0.6) * 0.06
+      ref.current.rotation.z = Math.cos(t * 0.5) * 0.04
     } else {
       ref.current.rotation.y = Math.sin(t * 0.4) * 0.45 + 0.4
       ref.current.rotation.x = Math.sin(t * 0.6) * 0.08
@@ -86,7 +121,7 @@ function PufferModel({ rotationX }) {
   )
 }
 
-export default function PufferFish({ rotationX }) {
+export default function PufferFish({ rotationX, rotationY, facing, lookAtRef }) {
   return (
     <Canvas
       gl={{
@@ -109,8 +144,8 @@ export default function PufferFish({ rotationX }) {
 
       <Suspense fallback={null}>
         <Environment preset="sunset" environmentIntensity={3.2} />
-        <Bounds fit clip observe margin={0.9}>
-          <PufferModel rotationX={rotationX} />
+        <Bounds fit clip observe margin={1.05}>
+          <PufferModel rotationX={rotationX} rotationY={rotationY} facing={facing} lookAtRef={lookAtRef} />
         </Bounds>
         <ContactShadows
           position={[0, -1.6, 0]}
