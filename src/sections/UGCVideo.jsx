@@ -1,11 +1,13 @@
 import { motion } from 'framer-motion'
 import { useIsMobile } from '../hooks/useMedia'
 
+const BASE = import.meta.env.BASE_URL
+
 const VIDEOS = [
-  '/Ai-add/ugc1.mp4',
-  '/Ai-add/ugc2.mp4',
-  '/Ai-add/ugc3.mp4',
-  '/Ai-add/ugc4.mp4',
+  `${BASE}ugc1.mp4`,
+  `${BASE}ugc2.mp4`,
+  `${BASE}ugc3.mp4`,
+  `${BASE}ugc4.mp4`,
 ]
 
 const features = [

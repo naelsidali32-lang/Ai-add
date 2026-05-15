@@ -1,7 +1,8 @@
 import { motion } from 'framer-motion'
 import { useIsMobile } from '../hooks/useMedia'
 
-const videos = ['/Ai-add/video4.mp4', '/Ai-add/video5.mp4', '/Ai-add/video6.mp4']
+const BASE = import.meta.env.BASE_URL
+const videos = [`${BASE}video4.mp4`, `${BASE}video5.mp4`, `${BASE}video6.mp4`]
 
 const features = [
   { title: '3D Avatar Creation',          desc: 'A unique, expressive 3D avatar built around your brand: quirky, memorable, and designed to pitch products or deliver advice in an engaging way.' },

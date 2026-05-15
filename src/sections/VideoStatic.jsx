@@ -1,7 +1,8 @@
 import { motion } from 'framer-motion'
 import { useIsMobile } from '../hooks/useMedia'
 
-const videos = ['/Ai-add/video1.mp4', '/Ai-add/video2.mp4', '/Ai-add/video3.mp4']
+const BASE = import.meta.env.BASE_URL
+const videos = [`${BASE}video1.mp4`, `${BASE}video2.mp4`, `${BASE}video3.mp4`]
 
 const features = [
   { title: 'Short Form Ads',       desc: 'High fidelity clips from 5 to 15 seconds using Kling AI, the current state of the art for advertising video.' },

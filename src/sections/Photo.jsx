@@ -1,14 +1,15 @@
 import { motion } from 'framer-motion'
 import { useIsMobile } from '../hooks/useMedia'
 
-const heroPhotos = ['/Ai-add/photoM.jpg', '/Ai-add/photoN.jpg']
+const BASE = import.meta.env.BASE_URL
+const heroPhotos = [`${BASE}photoM.jpg`, `${BASE}photoN.jpg`]
 const scatter1 = [
-  '/Ai-add/photoA.jpg', '/Ai-add/photoB.jpg', '/Ai-add/photoC.jpg',
-  '/Ai-add/photoD.jpg', '/Ai-add/photoE.jpg', '/Ai-add/photoF.jpg',
+  `${BASE}photoA.jpg`, `${BASE}photoB.jpg`, `${BASE}photoC.jpg`,
+  `${BASE}photoD.jpg`, `${BASE}photoE.jpg`, `${BASE}photoF.jpg`,
 ]
 const scatter2 = [
-  '/Ai-add/photoG.jpg', '/Ai-add/photoH.jpg', '/Ai-add/photoI.jpg',
-  '/Ai-add/photoJ.jpg', '/Ai-add/photoK.jpg', '/Ai-add/photoL.jpg',
+  `${BASE}photoG.jpg`, `${BASE}photoH.jpg`, `${BASE}photoI.jpg`,
+  `${BASE}photoJ.jpg`, `${BASE}photoK.jpg`, `${BASE}photoL.jpg`,
 ]
 const allPhotos = [...heroPhotos, ...scatter1, ...scatter2]
 

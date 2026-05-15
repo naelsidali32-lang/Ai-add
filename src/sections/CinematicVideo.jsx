@@ -142,7 +142,7 @@ function MobileVersion() {
         <div style={{ width: '100%', height: 14, background: '#0A0A0A' }} />
         <div style={{ width: '100%', aspectRatio: '16/9', overflow: 'hidden', position: 'relative' }}>
           <video
-            src="/Ai-add/video7.mp4"
+            src={`${import.meta.env.BASE_URL}video7.mp4`}
             autoPlay
             loop
             muted
@@ -251,7 +251,7 @@ function DesktopVersion() {
         <div style={{ width: '100%', height: 28, background: '#0A0A0A' }} />
         <div style={{ width: '100%', aspectRatio: '16/9', overflow: 'hidden', position: 'relative' }}>
           <video
-            src="/Ai-add/video7.mp4"
+            src={`${import.meta.env.BASE_URL}video7.mp4`}
             autoPlay
             loop
             muted
