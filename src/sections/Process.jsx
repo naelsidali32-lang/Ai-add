@@ -372,6 +372,7 @@ function Stage({ progress, vw }) {
             position: 'absolute',
             left: -200, top: -400,
             width: 1800, height: 800,
+            maxWidth: 'none',
             overflow: 'visible',
             pointerEvents: 'none',
           }}
